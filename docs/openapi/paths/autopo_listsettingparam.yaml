@@ -1,0 +1,33 @@
+get:
+  summary: List setting parameters
+  deprecated: false
+  description: |
+    Retrieve all Auto PO setting parameters.
+  operationId: listSettingParams
+  tags:
+    - Auto PO Configuration
+  parameters: []
+  responses:
+    '200':
+      description: Setting parameters retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: array
+                items:
+                  type: object
+                  properties: {}
+      headers: {}
+    '401':
+      $ref: '../components/responses/ErrorResponses.yaml#/Unauthorized'
+    '400':
+      $ref: '../components/responses/ErrorResponses.yaml#/BadRequest'
+    '500':
+      $ref: '../components/responses/ErrorResponses.yaml#/InternalServerError'
+  security:
+    - bearer: []

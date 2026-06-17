@@ -1,0 +1,59 @@
+{
+  "name": "sinarmas-aigen-api-automation-test",
+  "version": "1.0.0",
+  "description": "API automation testing suite for Sinarmas AiGen procurement system",
+  "type": "module",
+  "scripts": {
+    "convert:credentials": "node scripts/convert-credentials.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:integrations:authentication": "vitest run tests/integrations/01-authentication",
+    "test:integrations:autpo": "vitest run tests/integrations/02-autopo",
+    "test:e2e": "vitest run tests/e2e",
+    "test:e2e:rfq-workflow": "vitest run tests/e2e/rfq-workflow",
+    "test:e2e:rfq-workflow:s1": "vitest run tests/e2e/rfq-workflow/s1-vendor-direct",
+    "test:e2e:rfq-workflow:s2": "vitest run tests/e2e/rfq-workflow/s2-vendor-alternate",
+    "test:e2e:rfq-workflow:s3": "vitest run tests/e2e/rfq-workflow/s3-vendor-combined",
+    "test:e2e:rfq-workflow:dic": "vitest run tests/e2e/rfq-workflow/dic-review",
+    "test:e2e:rfq-workflow:cs": "vitest run tests/e2e/rfq-workflow/cs-send-qcf",
+    "test:e2e:rfq-workflow:cl": "vitest run tests/e2e/rfq-workflow/cl-approval",
+    "test:e2e:rfq-workflow:management": "vitest run tests/e2e/rfq-workflow/management-approval",
+    "redocly:bundle": "redocly bundle docs/openapi/openapi.yaml -o docs/openapi/openapi.bundle.yaml",
+    "redocly:lint:bundle": "redocly lint docs/openapi/openapi.bundle.yaml",
+    "redocly:lint:split": "redocly lint docs/openapi/openapi.yaml"
+  },
+  "keywords": [
+    "api",
+    "testing",
+    "automation",
+    "vitest",
+    "procurement"
+  ],
+  "author": "Sinarmas AiGen Team",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^9.3.0",
+    "@redocly/cli": "^2.29.1",
+    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/ui": "^2.1.8",
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
+    "js-yaml": "^4.1.1",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.4.7",
+    "form-data": "^4.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.5.47",
+    "mysql2": "^3.11.5",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

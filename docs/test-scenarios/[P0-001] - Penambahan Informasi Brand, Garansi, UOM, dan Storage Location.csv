@@ -1,0 +1,665 @@
+App Name,"[P0-001] - Penambahan Informasi Brand, Garansi, UOM, dan Storage Location",,,,,,,,
+Version,v1.0.0,,,,,,,,
+Environment,,,,,,,,,
+Author,,,,,,,,,
+Tester,,,,,,,,,
+Participants,,,,,,,,,
+Created At,2026-04-22T08:36:01.321Z,,,,,,,,
+Last Modified,2026-04-22T08:36:01.321Z,,,,,,,,
+,,,,,,,,,
+User Story,Test ID,Test Type,Test Scenario,Pre-condition,Test Step,Result,Status,Additional Note,
+"Sebagai vendor, saya ingin mengisi informasi brand pada saat submit quotation agar dapat menawarkan produk dengan brand tertentu",P0-001-TC001,Positive,Vendor mengisi field brand pada form quotation,Vendor sudah login dan memiliki RFQ yang harus di-quote,"1. Vendor membuka halaman Vendor Quotation
+2. Vendor melihat detail item RFQ dengan brand request
+3. Vendor mengisi field Brand pada salah satu item
+4. Vendor mengisi field-field lainnya yang required (harga, delivery date, dll)
+5. Vendor klik tombol Submit","1. Field brand tersimpan dengan nilai yang diinput
+2. Data brand muncul di preview quotation
+3. Data brand terkirim ke sistem
+4. Status berubah dari VD1/VD5/V1 menjadi VD2/VD3/V2/V3",OPEN,"Test data: brand = 'Samsung', 'LG', 'Panasonic'",
+"Sebagai vendor, saya ingin mengisi informasi garansi (warranty) dalam bulan pada saat submit quotation agar dapat menawarkan produk dengan warranty tertentu",P0-001-TC002,Positive,Vendor mengisi field Garansi (warranty) pada form quotation,Vendor sudah login dan memiliki RFQ yang harus di-quote,"1. Vendor membuka halaman Vendor Quotation
+2. Vendor mengisi field Garansi (dalam bulan) pada salah satu item
+3. Vendor mengisi field-field lainnya yang required
+4. Vendor klik tombol Submit","1. Field garansi tersimpan dengan nilai yang diinput
+2. Data garansi muncul di preview quotation dalam format bulan
+3. Data garansi terkirim ke sistem
+4. Status berubah sesuai state machine",OPEN,"Test data: garansi = 12, 24, 36 bulan",
+"Sebagai vendor, saya ingin memilih Storage Location (SLOC) pada saat submit quotation agar dapat menentukan lokasi pengiriman",P0-001-TC003,Positive,Vendor memilih Storage Location (SLOC) pada form quotation,"Vendor sudah login dan memiliki RFQ yang harus di-quote, data SAP SLOC tersedia","1. Vendor membuka halaman Vendor Quotation
+2. Vendor klik dropdown Storage Location
+3. Sistem load SLOC berdasarkan plant dari PR
+4. Vendor memilih salah satu SLOC dari daftar
+5. Vendor mengisi field-field lainnya yang required
+6. Vendor klik tombol Submit","1. Field SLOC tersimpan dengan kode yang dipilih
+2. Nama SLOC muncul di preview quotation
+3. Data SLOC terkirim ke sistem
+4. Deviasi SLOC dihitung (sama/berbeda dengan request)",OPEN,Data SLOC berasal dari master data SAP Storage Location,
+"Sebagai vendor, saya ingin mengisi detail alamat pengiriman (vendor_address_details) untuk informasi lengkap",P0-001-TC004,Positive,Vendor填写detail address pada form quotation,Vendor sudah login dan memilih SLOC,"1. Vendor memilih Storage Location
+2. Vendor mengisi detail address di kolom yang tersedia (franko toko, dll)
+3. Vendor submit quotation","1. Detail address tersimpan
+2. Di PO generation, detail address masuk ke material_po_text
+3. Format: 'brand: [brand], garansi: [garansi] bulan, detail_alamat: [alamat]'",OPEN,Field vendor_address_details,
+"Sebagai vendor, saya ingin submit quotation tanpa brand (field opsional)",P0-001-TC005,Positive,Vendor submit quotation tanpa brand (Optional field),Vendor sudah login,"1. Vendor tidak mengisi field Brand
+2. Vendor mengisi field-field required lainnya (harga, delivery)
+3. Vendor submit quotation","1. Brand tersimpan sebagai null/empty
+2. Di halaman DIC, tampil '-' untuk brand
+3. Submission tetap berhasil
+4. Status berubah sesuai state machine",OPEN,Field brand adalah opsional,
+"Sebagai vendor, saya ingin submit quotation tanpa garansi (field opsional)",P0-001-TC006,Positive,Vendor submit quotation tanpa garansi (Optional field),Vendor sudah login,"1. Vendor tidak mengisi field Garansi
+2. Vendor mengisi field-field required lainnya
+3. Vendor submit quotation","1. Garansi tersimpan sebagai null/0
+2. Di halaman DIC, tampil '0' atau '-' untuk garansi
+3. Submission tetap berhasil",OPEN,Field garansi adalah opsional,
+"Sebagai vendor, saya ingin submit quotation dengan garansi nilai maksimum (999 bulan)",P0-001-TC007,Negative,Vendor submit dengan garansi nilai maksimum,Vendor sudah login,"1. Vendor mengisi field Garansi dengan nilai 999
+2. Vendor submit quotation","1. Garansi tersimpan sebagai 999
+2. Deviasi garansi dihitung dengan benar
+3. Tidak ada overflow error",OPEN,Maximum value edge case,
+"Sebagai vendor, saya ingin submit quotation dengan garansi melebihi batas maksimum (negative)",P0-001-TC008,Negative,Vendor submit dengan garansi melebihi batas maksimum (Negative),Vendor sudah login,"1. Vendor mengisi field Garansi dengan nilai 1000
+2. Vendor submit quotation","1. Sistem menampilkan pesan error 'Garansi tidak boleh melebihi 999 bulan'
+2. Data tidak tersimpan
+3. User tetap di halaman form",OPEN,Validation test - max value exceeded,
+"Sebagai vendor, saya ingin submit quotation dengan garansi negatif (negative)",P0-001-TC009,Negative,Vendor submit dengan garansi negatif (Negative),Vendor sudah login,"1. Vendor mengisi field Garansi dengan nilai negatif (-12)
+2. Vendor submit quotation","1. Sistem menampilkan pesan error 'Garansi tidak boleh negatif'
+2. Data tidak tersimpan
+3. User tetap di halaman form",OPEN,Validation test - negative value,
+"Sebagai vendor, saya ingin mengajukan quotation dengan brand yang SAMA dengan request",P0-001-TC010,Positive,Vendor submit dengan brand SAMA dengan request (Positive),RFQ request dengan brand 'Samsung',"1. Request brand adalah 'Samsung'
+2. Vendor mengisi offer brand 'Samsung'
+3. Vendor submit quotation","1. Deviasi brand menunjukkan 'sama dengan PR'
+2. Indikator warna hijau/hijau muda
+3. Data lanjut ke DIC",OPEN,Positive test case - brand match,
+"Sebagai vendor, saya ingin mengajukan quotation dengan brand yang BERBEDA dari request",P0-001-TC011,Positive,Vendor submit dengan brand BERBEDA dari request (Deviasi),RFQ request dengan brand 'Samsung',"1. Request brand adalah 'Samsung'
+2. Vendor mengisi offer brand 'LG'
+3. Vendor submit quotation","1. Deviasi brand menunjukkan 'berbeda dengan PR'
+2. Indikator warna merah/oranye
+3. DIC dapat melihat perbedaan
+4. Data lanjut ke DIC dengan status deviasi",OPEN,Deviasi test case,
+"Sebagai vendor, saya ingin mengajukan quotation dengan warranty lebih lama dari request",P0-001-TC012,Positive,Vendor submit dengan garansi LEBIH dari request (Positive),RFQ request dengan garansi 12 bulan,"1. Request garansi adalah 12 bulan
+2. Vendor mengisi offer garansi 24 bulan
+3. Vendor submit quotation","1. Deviasi garansi menunjukkan '+12 bulan'
+2. Indikator warna hijau (lebih baik)
+3. Data lanjut ke DIC",OPEN,Positive test case - warranty lebih baik,
+"Sebagai vendor, saya ingin mengajukan quotation dengan warranty lebih singkat dari request",P0-001-TC013,Positive,Vendor submit dengan garansi lebih SINGKAT dari request (Deviasi),RFQ request dengan garansi 24 bulan,"1. Request garansi adalah 24 bulan
+2. Vendor mengisi offer garansi 12 bulan
+3. Vendor submit quotation","1. Deviasi garansi menunjukkan '-12 bulan'
+2. Indikator warna merah (lebih rendah)
+3. Data lanjut ke DIC dengan status deviasi",OPEN,Deviasi test case,
+"Sebagai vendor yang MENOLAK quotation, saya tidak ingin ada informasi offer brand, garansi, dan SLOC yang tersimpan",P0-001-TC014,Positive,Vendor DECLINE - informasi offer di-reset (State VD4/VA4/V18-V21),Vendor sudah login dan memiliki RFQ (State VD1/VA1/V1),"1. Vendor membuka halaman Vendor Quotation
+2. Vendor memilih status DECLINE
+3. Vendor klik tombol Submit","1. offer_vendor_brand menjadi null
+2. offer_vendor_warranty menjadi null
+3. offer_vendor_sloc menjadi null
+4. Deviasi menampilkan 'Vendor Declined'
+5. Status berubah ke VD4/VA4/V18-V21 (Waiting CS)",OPEN,"State transitions: VD4, VA4, V18, V19, V20, V21",
+"Sebagai vendor, saya ingin memilih status NEED CONFIRMATION untuk bertanya tentang spesifikasi",P0-001-TC015,Positive,Vendor submit dengan status NEED CONFIRMATION (State VD3/VA3/V3-V17),Vendor sudah login dan memiliki RFQ,"1. Vendor membuka halaman Vendor Quotation
+2. Vendor memilih status 'Need Confirmation'
+3. Vendor mengisi field spesifikasi dengan pertanyaan
+4. Vendor tidak wajib isi harga/garansi
+5. Vendor submit quotation","1. Status tersimpan sebagai 'Need Confirmation'
+2. Data spesifikasi tersimpan
+3. Status berubah ke DIC (Waiting DIC) untuk Request Revise
+4. DIC melihat status Need Confirmation",OPEN,"State VD3, VA3, V3-V17",
+"Sebagai user (PIC Procurement), saya ingin membuat RFQ baru dengan informasi brand, garansi, UOM, dan Storage Location yang diminta",P0-001-TC016,Positive,"User membuat RFQ baru dengan informasi brand, garansi, UOM, SLOC request",User (PIC Procurement) sudah login dengan role yang sesuai,"1. User membuka halaman pembuatan RFQ
+2. User memasukkan detail PR/Material
+3. User mengisi field Brand yang diinginkan
+4. User mengisi field Garansi (dalam bulan)
+5. User memilih/memasukkan UOM
+6. User memilih Storage Location dari dropdown
+7. User submit RFQ","1. RFQ tersimpan dengan brand request
+2. Garansi request tersimpan
+3. UOM request tersimpan
+4. SLOC request tersimpan
+5. RFQ dikirim ke vendor (status VD1)
+6. Vendor dapat melihat brand, garansi, SLOC yang diminta",OPEN,User creates RFQ - NOT DIC,
+"Sebagai DIC, saya ingin melihat perbandingan brand antara request dan offer dengan indikator warna",P0-001-TC017,Positive,DIC melihat deviasi brand di halaman konfirmasi dengan calculateBrandDeviation,DIC sudah login dan ada vendor yang mengajukan quotation,"1. DIC membuka halaman DIC Confirmation
+2. DIC melihat kolom Brand dengan indikator warna
+3. DIC melihat status perbandingan (sama/berbeda dengan PR)","1. Jika brand sama dengan request, tampil warna hijau/hijau muda
+2. Jika brand berbeda dengan request, tampil warna merah/oranye
+3. Tertulis status 'sama dengan PR' atau 'berbeda dengan PR'
+4. Fungsi calculateBrandDeviation() berjalan dengan benar",OPEN,Fungsi calculateBrandDeviation di backend,
+"Sebagai DIC, saya ingin melihat perbandingan garansi antara request dan offer dengan selisih bulan",P0-001-TC018,Positive,DIC melihat deviasi garansi di halaman konfirmasi dengan calculateWarrantyDeviation,DIC sudah login dan ada vendor yang mengajukan quotation,"1. DIC membuka halaman DIC Confirmation
+2. DIC melihat kolom Garansi dengan indikator warna
+3. DIC melihat status perbandingan (sama/berbeda dengan PR)","1. Jika garansi lebih tinggi dari request, tampil '+X bulan' dengan warna hijau
+2. Jika garansi lebih rendah dari request, tampil '-X bulan' dengan warna merah
+3. Jika garansi sama dengan request, tampil '-'
+4. Fungsi calculateWarrantyDeviation() berjalan dengan benar",OPEN,Fungsi calculateWarrantyDeviation di backend,
+"Sebagai DIC, saya ingin ACCEPT quotation dengan informasi brand/garansi/SLOC yang lengkap",P0-001-TC019,Negative,DIC Accept quotation - lanjut ke CS (State DIC3/DIC5/DIC7),DIC sudah di halaman confirmation dengan offer dari vendor (State DIC1),"1. DIC membuka halaman DIC Confirmation
+2. DIC melihat semua informasi brand, garansi, SLOC (request vs offer)
+3. DIC melihat deviasi indicators
+4. DIC klik tombol Accept
+5. DIC klik confirm pada popup","1. Status berubah ke CS (Waiting CS)
+2. Data brand, garansi, SLOC offer tersimpan lengkap
+3. Lead time tercatat di log_sla
+4. Email notification terkirim ke CS
+5. DIC TIDAK membuat RFQ - hanya review vendor quotation",OPEN,DIC action: Accept ONLY - tidak membuat RFQ,
+"Sebagai DIC, saya ingin ACCEPT quotation dari vendor A dan auto DECLINED untuk vendor B",P0-001-TC019,Negative,DIC Accept Vendor A - lanjut ke CS (State DIC3/DIC5/DIC7),DIC sudah di halaman confirmation dengan offer dari vendor (State DIC1) dan ada quotation dari S3 (1 Item dari 2 vendor berbeda),"1. DIC membuka halaman DIC Confirmation
+2. DIC melihat semua informasi brand, garansi, SLOC (request vs offer)
+3. DIC melihat deviasi indicators
+4. DIC klik tombol Accept
+5. UI auto declined untuk vendor lawan
+6. DIC klik confirm pada popup","1. Status berubah ke CS (Waiting CS)
+2. Data brand, garansi, SLOC offer tersimpan lengkap
+3. Lead time tercatat di log_sla
+4. Email notification terkirim ke CS
+5. DIC TIDAK membuat RFQ - hanya review vendor quotation",OPEN,DIC action: Accept ONLY - tidak membuat RFQ,
+"Sebagai DIC, saya ingin REQUEST REVISE quotation dengan mengisi alasan yang ditampilkan ke vendor",P0-001-TC020,Edge Case,DIC Request Revise - RFQ kembali ke vendor untuk revised quote (State DIC9/DIC10/DIC11),DIC sudah di halaman confirmation (State DIC1),"1. DIC halaman DIC Confirmation
+2. DIC melihat informasi brand, garansi, SLOC request vs offer
+3. DIC klik tombol 'Request Revise'
+4. DIC mengisi alasan/komentar di kolom yang tersedia
+5. DIC Submit","1. Status berubah kembali ke Vendor (Waiting Vendor)
+2. Alasan revisi tersimpan di database
+3. Vendor melihat alasan revisi di kolom penolakan
+4. Brand, garansi, SLOC dapat diedit ulang oleh vendor
+5. RFQ kembali ke state VD1/V1 untuk vendor quote ulang",OPEN,DIC action: Request Revise - bukan Decline,
+"Sebagai DIC, saya ingin DECLINE quotation dengan alasan spesifik - lanjut ke Manual Sourcing",P0-001-TC021,Positive,"DIC Decline - RFQ tidak bisa dilanjutkan, Auto Manual Sourcing (State DIC13)",DIC sudah di halaman confirmation (State DIC1),"1. DIC halaman DIC Confirmation
+2. DIC klik tombol 'Decline'
+3. DIC isi alasan
+4. DIC submit","1. Status berubah ke END (Manual Sourcing)
+2. DIC13 - Auto Manual Sourcing triggered
+3. Log_sla tercatat dengan reason
+4. RFQ keluar dari flow AI-Gen",OPEN,DIC action: Decline - Auto Manual Sourcing,
+"Sebagai DIC, saya ingin REQUEST REVISE dengan mengisi alasan penolakan yang ditampilkan ke vendor",P0-001-TC020,Edge Case,DIC Request Revise - kembali ke vendor (State DIC9/DIC10/DIC11),DIC sudah di halaman confirmation (State DIC1) dan ada data dari vendor dengan status Need Confirmation,"1. DIC membuka halaman DIC Confirmation
+2. DIC melihat informasi brand, garansi, SLOC
+3. DIC klik tombol Request Revise
+4. DIC mengisi alasan penolakan di kolom yang tersedia
+5. DIC submit","1. Status berubah ke Vendor (Waiting Vendor)
+2. Alasan revisi tersimpan di database
+3. Vendor melihat alasan revisi
+4. Brand, garansi, SLOC dapat diedit ulang oleh vendor",OPEN,"State DIC9 (VA), DIC10 (VD S1), DIC11 (VD S2)",
+"Sebagai CS, saya ingin melihat informasi brand, garansi, SLOC di halaman surrogate",P0-001-TC022,Positive,CS melihat informasi brand/garansi/SLOC di halaman Surrogate,RFQ sudah di status CS (State CS1 - dari VD4/VA4/V18-V21/V25/V27/V28) dan harga di atas OE,"1. CS membuka halaman Surrogate CS
+2. CS melihat informasi brand, garansi, SLOC dari vendor declined
+3. CS submit surrogate","1. Data brand dari vendor baru tersimpan
+2. Data garansi dari vendor baru tersimpan
+3. Data SLOC dari vendor baru tersimpan
+4. Status berubah ke CL (Waiting CL)",OPEN,State CS7 - Surrogate,
+"Sebagai CS, saya ingin melakukan Revisi OE dengan informasi brand/garansi/SLOC tetap ada",P0-001-TC023,Positive,CS Revisi OE - kembali ke vendor (State CS8),RFQ sudah di status CS (State CS1/CS2),"1. CS membuka halaman CS
+2. CS klik tombol Revisi OE
+3. CS submit","1. Status berubah ke DIC untuk revisi (State DIC8)
+2. Vendor menerima notifikasi revisi
+3. Brand, garansi, SLOC dapat diedit ulang",OPEN,State CS8 - Revisi OE,
+"Sebagai CL, saya ingin melihat informasi brand, garansi, SLOC di halaman approval sebelum menyetujui",P0-001-TC024,Positive,CL melihat informasi lengkap di halaman approval,RFQ sudah di status CL (State CL1/CL2 - dari CS3/CS6/CS7/CS8/CS9),"1. CL membuka halaman approval
+2. CL melihat detail item dengan brand, garansi, SLOC
+3. CL klik Approve atau Reject","1. Semua informasi brand terlihat
+2. Semua informasi garansi terlihat
+3. Semua informasi SLOC terlihat
+4. CL dapat memutuskan approve/reject
+5. Status lanjut ke MG jika approve",OPEN,"State CL1 (VD), CL2 (VA)",
+"Sebagai CL, saya ingin APPROVE quotation dengan informasi lengkap ke Management",P0-001-TC025,Positive,CL Approve - lanjut ke Management (State CL3/CL4),RFQ sudah di status CL (State CL1/CL2),"1. CL membuka halaman approval
+2. CL melihat brand, garansi, SLOC
+3. CL klik Approve
+4. CL submit","1. Status berubah ke MG (Waiting Management)
+2. Data lengkap tersimpan
+3. Lead time tercatat
+4. Email notification terkirim ke MG",OPEN,"State CL3 (VD), CL4 (VA)",
+"Sebagai CL, saya ingin REJECT quotation - lanjut ke Manual Sourcing",P0-001-TC026,Positive,CL Reject - Manual Sourcing (State CL5/CL6),RFQ sudah di status CL,"1. CL membuka halaman approval
+2. CL klik Reject
+3. CL submit","1. Status berubah ke END (Manual Sourcing)
+2. Log_sla tercatat
+3. Auto Manual Sourcing",OPEN,"State CL5, CL6 - Manual Sourcing",
+"Sebagai MG/Management, saya ingin melihat ringkasan brand, garansi, SLOC di halaman final approval",P0-001-TC027,Positive,Management melihat informasi di halaman final approval,RFQ sudah di status MG (State MG1/MG2 - dari CL3/CL4),"1. Management membuka halaman approval akhir
+2. Management melihat summary quotation
+3. Management klik Approve","1. Brand, garansi, SLOC terlihat di summary
+2. PO di-generate dengan informasi lengkap
+3. Data masuk ke material_po_text
+4. Format: 'brand: [brand], garansi: [garansi] bulan, detail_alamat: [alamat]'",OPEN,"State MG3, MG4 - PO Publish",
+"Sebagai MG, saya ingin APPROVE quotation - PO Publish",P0-001-TC028,Positive,MG Approve - PO Publish (State MG3/MG4),RFQ sudah di status MG (State MG1/MG2),"1. MG membuka halaman approval
+2. MG melihat brand, garansi, SLOC
+3. MG klik Approve
+4. MG submit","1. Status berubah ke END (PO Publish)
+2. PO ter-generate dengan brand, garansi, detail_alamat
+3. PO number ter-generate
+4. Log_sla tercatat lengkap",OPEN,"State MG3 (VD), MG4 (VA) - END",
+"Sebagai MG, saya ingin REJECT quotation - Manual Sourcing",P0-001-TC029,Positive,MG Reject - Manual Sourcing (State MG5/MG6),RFQ sudah di status MG,"1. MG membuka halaman approval
+2. MG klik Reject
+3. MG submit","1. Status berubah ke END (Manual Sourcing)
+2. Log_sla tercatat
+3. Auto Manual Sourcing",OPEN,"State MG5, MG6 - Manual Sourcing",
+"Sebagai sistem, saya ingin menangani RFQ dimana semua vendor DECLINE atau TIDAK SUBMIT - auto send to CS",P0-001-TC030,Positive,Auto Manual Sourcing - semua vendor decline/not submit,Semua vendor sudah DECLINE atau NOT SUBMIT,"1. Sistem mendeteksi semua vendor tidak dapat memberikan offer
+2. Cron job memeriksa status
+3. Sistem trigger send to CS",1. RFQ terkirim ke CS,OPEN,"State CS12-CS17, berbagai Auto Manual reason",
+"Sebagai vendor, saya ingin SUBMIT quotation untuk Quote yang sudah di REVISI oleh DIC dengan informasi lama tetap ada",P0-001-TC031,Positive,Vendor submit revised quotation dengan informasi sebelumnya,"RFQ sudah di status Request Revise (State VD3/V3-V17, dll)","1. Vendor membuka halaman Vendor Quotation
+2. Vendor melihat quotation sebelumnya dengan brand, garansi, SLOC
+3. Vendor mengedit harga dan informasi lainnya
+4. Vendor submit quotation","1. Data offer ter-update
+2. Timestamp updated_at berubah
+3. DIC melihat data baru
+4. Status berubah ke VD2/V2-V17",OPEN,Revisi OE flow,
+"Sebagai vendor, saya ingin MELIHAT brand, garansi, SLOC di PREVIEW sebelum submit",P0-001-TC032,Positive,Preview quotation menampilkan semua informasi yang diinput,Vendor sudah mengisi form quotation,"1. Vendor mengisi form quotation
+2. Vendor klik tombol Preview
+3. Vendor melihat semua data termasuk brand, garansi, SLOC
+4. Vendor klik Submit atau Edit","1. Brand terlihat di preview
+2. Garansi terlihat di preview
+3. SLOC terlihat di preview
+4. Detail address terlihat di preview
+5. Vendor dapat edit atau submit",OPEN,Ada di PreviewVendorQuotation.vue,
+"Sebagai vendor, saya ingin CANCEL pembuatan quotation dan kembali ke list",P0-001-TC033,Negative,Cancel quotation creation,Vendor di halaman form quotation,"1. Vendor membuka halaman Vendor Quotation
+2. Vendor mengisi beberapa field
+3. Vendor klik tombol Cancel
+4. Vendor klik Confirm pada popup","1. Form di-reset
+2. User kembali ke halaman list RFQ
+3. Data tidak tersimpan
+4. RFQ tetap di status sebelumnya",OPEN,Cancel functionality,
+"Sebagai user tanpa role yang sesuai, saya tidak dapat mengakses halaman RFQ untuk menjaga keamanan data",P0-001-TC034,Negative,Akses halaman RFQ tanpa role yang sesuai (Negative),User login dengan role yang tidak memiliki akses,"1. User login dengan role tidak berhak
+2. User mencoba mengakses halaman Vendor Quotation atau DIC Confirmation","1. Sistem menampilkan pesan error 'Anda tidak memiliki akses'
+2. User tidak dapat mengakses halaman
+3. Redirect ke halaman utama",OPEN,Test keamanan ACL,
+"Sebagai sistem, saya ingin menangani ERROR API saat vendor submit quotation",P0-001-TC035,Negative,API error saat submit quotation,API dalam kondisi error atau timeout,"1. Vendor mengisi form quotation lengkap
+2. Vendor klik Submit
+3. API returns 500 error atau timeout","1. Pesan error ditampilkan ke user
+2. User tetap di halaman form
+3. Data tidak tersimpan
+4. User dapat retry",OPEN,Error handling,
+"Sebagai sistem, saya ingin menangani NETWORK TIMEOUT saat submit quotation",P0-001-TC036,Negative,Network timeout handling,Network terputus atau lambat,"1. Vendor mengisi form quotation
+2. Network terputus saat submit
+3. Timeout terjadi setelah 30 detik","1. Pesan error timeout ditampilkan
+2. User dapat retry
+3. Data tidak ter-duplicate
+4. Loading state ditampilkan",OPEN,Network error handling,
+"Sebagai vendor, saya ingin submit quotation dengan brand menggunakan KARAKTER KHUSUS",P0-001-TC037,Negative,Vendor submit dengan brand menggunakan karakter khusus,Vendor sudah login,"1. Vendor mengisi field Brand dengan karakter khusus (contoh: 'Samsung/Sony', 'LG & Panasonic', 'Brand-DenganStrip')
+2. Vendor submit quotation","1. Brand tersimpan dengan benar
+2. Karakter khusus tidak menyebabkan error
+3. Tampilan di preview dan approval tetap benar
+4. Deviasi berfungsi dengan benar",OPEN,Special characters test,
+"Sebagai sistem, saya ingin menampilkan dropdown SLOC yang sesuai dengan PLANT dari PR",P0-001-TC038,Positive,Dropdown SLOC menampilkan data sesuai plant,"Ada data master SAP Storage Location, PR memiliki plant code","1. User/Vendor membuka form quotation
+2. Dropdown SLOC ter-load
+3. Sistem filter SLOC berdasarkan plant code
+4. User memilih SLOC","1. SLOC yang tampil sesuai dengan plant code
+2. Nama SLOC terlihat di dropdown
+3. Kode SLOC tersimpan saat dipilih
+4. Deviasi SLOC dihitung",OPEN,Ada di DropdownSloc.vue,
+"Sebagai sistem, saya ingin JOIN tabel SAP Storage Location untuk menampilkan NAMA SLOC",P0-001-TC039,Positive,SLOC name terlihat saat DIC/CL/MG approval,Vendor sudah submit dengan SLOC,"1. Vendor memilih SLOC '0001'
+2. DIC/CL/MG membuka halaman confirmation/approval
+3. Sistem join dengan table sap_storage_location
+4. Nama SLOC ditampilkan","1. Kode SLOC terlihat
+2. Nama SLOC terlihat
+3. Plant terlihat
+4. Informasi lengkap di QCF",OPEN,JOIN sap_storage_location table,
+"Sebagai DIC, saya ingin mengkonfirmasi quotation dari MULTI-VENDOR dengan brand berbeda-beda",P0-001-TC040,Complex,DIC mengkonfirmasi multi-vendor dengan berbagai brand,Minimal 2-3 vendor submit quotation dengan brand berbeda,"1. Vendor A submit dengan brand 'Samsung'
+2. Vendor B submit dengan brand 'LG'
+3. Vendor C submit dengan brand 'Panasonic'
+4. DIC membuka halaman confirmation
+5. DIC melihat semua brand进行比较
+6. DIC klik Approve untuk satu vendor","1. Semua vendor tercantum di list
+2. Brand setiap vendor terlihat dengan indikator warna deviasi
+3. DIC dapat memilih vendor mana yang di-approve
+4. Vendor lain berstatus rejected/delined
+5. QCF menampilkan perbandingan lengkap",OPEN,Multi-vendor comparison,
+"Sebagai DIC, saya ingin mengkonfirmasi quotation dimana semua vendor MENAMAKAN brand yang SAMA",P0-001-TC041,Complex,DIC mengkonfirmasi multi-vendor dengan brand SAMA,3 vendor submit quotation dengan brand SAMA ('Samsung'),"1. Semua vendor submit dengan brand 'Samsung'
+2. DIC membuka halaman confirmation
+3. DIC melihat semua brand SAMA
+4. DIC membandingkan harga dan garansi","1. Semua vendor menunjukkan 'sama dengan PR'
+2. Indikator warna semua hijau
+3. DIC compare berdasarkan harga/garansi
+4. QCF sorting by price ascending",OPEN,Multi-vendor same brand,
+"Sebagai sistem, saya ingin mencatat LOG SLA dengan lead_time_regular (exclude weekend) dan lead_time (include weekend)",P0-001-TC042,Positive,Log SLA tercatat dengan dua kolom lead time,Quotation submit dan ada status change,"1. RFQ berganti status (misal: VD1 ke VD2)
+2. Sistem mencatat log_sla
+3. Sistem hitung lead_time (include weekend)
+4. Sistem hitung lead_time_regular (exclude weekend)","1. Log SLA tercatat dengan timestamp
+2. lead_time = jumlah hari termasuk weekend
+3. lead_time_regular = jumlah hari exclude sabtu minggu
+4. Both recorded di database",OPEN,P0-005 feature - exclude weekend,
+"Sebagai admin, saya ingin MELIHAT AUDIT TRAIL semua perubahan brand/garansi/SLOC",P0-001-TC044,Positive,Admin melihat audit trail perubahan,Admin role login,"1. Admin membuka halaman admin/audit
+2. Admin melihat history perubahan
+3. Admin filter per field (brand, garansi, SLOC)
+4. Admin melihat detail perubahan","1. Semua perubahan tercatat
+2. Timestamp, user, nilai lama dan baru
+3. Dapat export report
+4. Filtering berfungsi",OPEN,Audit trail feature,
+"Sebagai perangkat mobile, saya ingin MELIHAT form quotation dengan brand, garansi, SLOC",P0-001-TC046,Positive,Responsive - mobile view,Akses via mobile browser (HP),"1. User membuka halaman melalui HP
+2. User melihat form quotation
+3. User input brand, garansi, SLOC","1. Tampilan responsif
+2. Semua field terlihat dan dapat di-input
+3. Scroll berfungsi
+4. Submit button terlihat dan dapat diklik",OPEN,Mobile responsiveness,
+"Sebagai perangkat tablet, saya ingin MELIHAT form quotation dengan benar",P0-001-TC047,Positive,Responsive - tablet view,Akses via tablet,"1. User membuka halaman melalui tablet
+2. User melihat form quotation
+3. User input data","1. Tampilan responsif
+2. Layout sesuai ukuran layar
+3. Semua function bekerja
+4. Input fields accessible",OPEN,Tablet responsiveness,
+"Sebagai API, saya ingin MENERIMA request dengan brand NULL saat create RFQ",P0-001-TC048,Negative,API menerima RFQ dengan brand null,API endpoint available untuk create RFQ,"1. User submit RFQ melalui API
+2. Field brand dikosongkan/null
+3. Sistem menerima request","1. RFQ tersimpan dengan brand null
+2. Semua halaman menampilkan '-' untuk brand
+3. Vendor dapat submit tanpa brand
+4. Deviasi tidak muncul untuk brand",OPEN,API integration test,
+"Sebagai sistem, saya ingin menghasilkan PO text dengan format yang benar brand, garansi, detail_alamat",P0-001-TC049,Positive,PO generation menyertakan brand dan garansi di material_po_text,Quotation sudah di-approve oleh Management (State MG3/MG4),"1. RFQ di-approve oleh Management
+2. Sistem generate PO
+3. PO text dibuat dengan format:
+   - brand: [brand]
+   - garansi: [garansi] bulan
+   - detail_alamat: [alamat]","1. PO ter-generate
+2. Material text format: 'brand: Samsung, garansi: 24 bulan, detail_alamat: Jl. Merdeka No.1'
+3. Data tersimpan di database PO
+4. PO number ter-generate",OPEN,Ada di PurchaseRequest.repository.js,
+"Sebagai sistem, saya ingin menangani TOKEN EXPIRED saat vendor no action",P0-001-TC050,Negative,Token expired saat no action,"RFQ Created, Vendor no action until date expiry, token sudah expired","1. Create data rfq
+2. Vendor no action
+3. Token RFQ expired ( cron date expiry )","
+1. Pesan 'Link telah expired' ditampilkan",OPEN,Token expired handling,
+"Sebagai vendor, saya ingin MENGAJUKAN quotation untuk RFQ dengan PRICE DIATAS OE",P0-001-TC051,Positive,Price above OE - auto send to CS after DIC Submit,"Vendor level 1 submit price > OE, konfigurasi P1-012 aktif","1. Vendor Level 1 submit quotation dengan price > OE
+2. DIC response and submit
+3. Sistem detect price > OE
+4. Send RFQ to CS","1. RFQ baru dibuat untuk vendor aggregator/level 2
+2. DIC dapat melihat offer dari level 1 dan level 2
+3. Status tracking terpisah
+4. Perbandingan multi-level di QCF",OPEN,P1-012 - Level 1 > OE,
+"Sebagai sistem, saya ingin MENAMPILKAN deviasi untuk perbandingan offer dengan request di QCF",P0-001-TC052,Positive,QCF menampilkan deviasi brand dan garansi,Minimal 1 vendor submit quotation,"1. DIC approve quotation
+2. User membuka halaman QCF
+3. User melihat semua vendor dengan informasi lengkap
+4. User melihat deviasi comparison","1. Tiap vendor menampilkan brand request dan offer
+2. Tiap vendor menampilkan garansi dalam bulan
+3. Tiap vendor menampilkan SLOC
+4. Indikator deviasi visible (sama/berbeda)
+5. User dapat sorting dan filter",OPEN,QCF comparison,
+"Sebagai CS, saya ingin MELIHAT RFQ di status CS_expiry (sudah ada action dari vendor)",P0-001-TC053,Positive,CS melihat RFQ di status CS_expiry,RFQ dalam status CS1 - waiting action dari CS,"1. CS login
+2. CS melihat list RFQ dengan status CS1
+3. CS memilih RFQ untuk di-action
+4. CS melihat detail dengan brand, garansi, SLOC dari vendor","1. List RFQ terlihat dengan status 'Waiting CS'
+2. Detail RFQ menampilkan informasi lengkap
+3. CS dapat pilih action: Resend RFQ, Surrogate, Revisi OE, Manual Sourcing",OPEN,State CS1 - CS_expiry,
+"Sebagai CL, saya ingin MELIHAT RFQ di status CL_expiry (sudah ada action dari CS)",P0-001-TC054,Positive,CL melihat RFQ di status CL_expiry,RFQ dalam status CL1/CL2 - waiting action dari CL,"1. CL login
+2. CL melihat list RFQ dengan status 'Waiting CL'
+3. CL memilih RFQ untuk approve/reject
+4. CL melihat detail dengan brand, garansi, SLOC","1. List RFQ terlihat dengan status CL1/CL2
+2. Detail RFQ menampilkan informasi lengkap
+3. CL dapat Approve (ke MG) atau Reject (Manual Sourcing)",OPEN,"State CL1, CL2 - CL_expiry",
+"Sebagai MG, saya ingin MELIHAT RFQ di status MG_expiry (sudah ada action dari CL)",P0-001-TC055,Positive,MG melihat RFQ di status MG_expiry,RFQ dalam status MG1/MG2 - waiting action dari Management,"1. Management login
+2. Management melihat list RFQ dengan status 'Waiting Management'
+3. Management memilih RFQ untuk approve/reject
+4. Management melihat detail dengan brand, garansi, SLOC","1. List RFQ terlihat dengan status MG1/MG2
+2. Detail RFQ menampilkan informasi lengkap
+3. Management dapat Approve (PO Publish) atau Reject (Manual Sourcing)",OPEN,"State MG1, MG2 - Management_expiry",
+"Sebagai vendor, saya ingin submit quotation dari state VD1 (Vendor_direct_expiry S1) - ACCEPT",P0-001-TC056,Positive,VD1 (S1) - Vendor Direct Expiry -> ACCEPT -> VD2,"RFQ di state VD1 - Vendor Direct Expiry, SLAdari ke vendor direct","1. Vendor menerima RFQ dari state VD1
+2. Vendor input brand, garansi, SLOC, harga
+3. Vendor Klik ACCEPT
+4. Vendor Submit","1. Status berubah ke VD2 (Waiting DIC)
+2. Data offer tersimpan
+3. lead_time tercatat
+4. DIC menerima notifikasi",OPEN,State: VD1 -> VD2,
+"Sebagai vendor, saya ingin submit quotation dari state VD1 (Vendor_direct_expiry S1) - NEED CONFIRMATION",P0-001-TC057,Positive,VD1 (S1) - Vendor Direct Expiry -> NEED CONFIRMATION -> VD3,RFQ di state VD1 - Vendor Direct Expiry,"1. Vendor menerima RFQ
+2. Vendor tidak yakin spesifikasi
+3. Vendor Pilih NEED CONFIRMATION
+4. Vendor input pertanyaan spesifikasi
+5. Vendor Submit","1. Status berubah ke VD3 (Waiting DIC)
+2. Spesifikasi pertanyaan tersimpan
+3. DIC melihat status Need Confirmation",OPEN,State: VD1 -> VD3,
+"Sebagai vendor, saya ingin DECLINE quotation dari state VD1 (Vendor_direct_expiry S1)",P0-001-TC058,Positive,VD1 (S1) - Vendor Direct Expiry -> DECLINE -> VD4,RFQ di state VD1,"1. Vendor menerima RFQ
+2. Vendor pilih DECLINE
+3. Vendor Submit","1. Status berubah ke VD4 (Waiting Vendor - No Quote)
+2. Data offer null
+3. System trigger ke VA1 (Vendor Aggregator)",OPEN,State VD1 -> VD4 -> VA1,
+"Sebagai vendor, saya ingin NO ACTION pada state VD1 - otomatis ke V1",P0-001-TC059,Positive,VD1 - Vendor Direct Expiry -> NO ACTION -> otomatis V1 (Vendor Expiry S3),"RFQ di state VD1, vendor TIDAK action dalam SLA","1. Sistem mendeteksi VD1 tidak ada action dalam SLA
+2. Cron job auto-trigger
+3. Status berubah ke V1","1. Status berubah ke V1 (Vendor_expiry S3)
+2. RFQ dikirim ke semua vendor (S3)
+3. Log_sla mencatat expired",OPEN,State: VD1 -> V1 (auto),
+"Sebagai vendor, saya ingin submit ACCEPT dari state VA1 (Vendor_aggregator_expiry S2)",P0-001-TC060,Positive,VA1 (S2) - Vendor Aggregator Expiry -> ACCEPT -> VA2,RFQ di state VA1 - dari VD4 atau V18-V21,"1. Vendor Aggregator terima RFQ (S2)
+2. Vendor input brand, garansi, SLOC, harga
+3. Vendor ACCEPT
+4. Vendor Submit","1. Status berubah ke VA2 (Waiting DIC)
+2. Data offer tersimpan
+3. DIC dapat review",OPEN,State VA1 -> VA2,
+"Sebagai vendor, saya ingin submit ACCEPT dari state V1 (Vendor_expiry S3)",P0-001-TC061,Positive,V1 (S3) - Vendor Expiry S3 -> ACCEPT -> V2,RFQ di state V1 - dari VA1 no action atau VD1->V1,"1. Vendor terima RFQ (S3)
+2. Vendor input brand, garansi, SLOC, harga
+3. Vendor ACCEPT
+4. Vendor Submit","1. Status berubah ke V2 (Waiting DIC)
+2. Next step bisa berbagai state (V6,V7,V10,V11)",OPEN,State V1 -> V2,
+"Sebagai vendor, saya ingin submit NEED CONFIRMATION dari state V1 (S3)",P0-001-TC062,Positive,V1 (S3) - Vendor Expiry -> NEED CONFIRMATION -> V3,RFQ di state V1,"1. Vendor tidak paham spesifikasi
+2. Vendor pilih NEED CONFIRMATION
+3. Vendor input pertanyaan
+4. Vendor Submit","1. Status berubah ke V3 (Waiting DIC)
+2. DIC lihat status Need Confirmation",OPEN,State V1 -> V3,
+"Sebagai vendor, saya ingin DECLINE dari state V1 (S3) - trigger ke CS",P0-001-TC063,Negative,V1 (S3) - Vendor Expiry -> DECLINE -> V18 (Waiting CS),RFQ di state V1,"1. Vendor tidak bisa isi quotation
+2. Vendor pilih DECLINE
+3. Vendor Submit","1. Status berubah ke V18 (Waiting Procurement/CL)
+2. Next: CS1
+3. Vendor tidak offer",OPEN,State V1 -> V18 -> CS1,
+"Sebagai DIC, saya ingin ACCEPT dari state VD2 (dari VD1 ACCEPT)",P0-001-TC064,Positive,VD2 - Accept from VD1 -> ACCEPT -> DIC3/DIC5/DIC7,RFQ di state VD2 - offer dari vendor direct,"1. DIC menerima RFQ di state VD2
+2. DIC lihat brand, garansi, SLOC request vs offer
+3. DIC lihat deviasi
+4. DIC ACCEPT
+5. DIC Submit","1. Status berubah ke DIC3/DIC5/DIC7 (Waiting CS/CL)
+2. Data offer approved
+3. lead_time tercatat",OPEN,DIC Accept - VD2 path,
+"Sebagai DIC, saya ingin ACCEPT dari state V2 (dari V1 ACCEPT)",P0-001-TC065,Positive,V2 - dari Vendor Expiry S3 -> ACCEPT -> DIC1,RFQ di state V2 - offer dari vendor S3,"1. DIC terima di state V2 (Waiting DIC)
+2. DIC review brand/garansi/SLOC
+3. DIC ACCEPT
+4. DIC Submit","1. Status berubah ke DIC1
+2. DIC dapat berbagai next: DIC2-DIC7",OPEN,DIC Accept - V2 path,
+"Sebagai DIC, saya ingin ACCEPT dengan option APPROVE VD (above OE S1)",P0-001-TC066,Positive,DIC2 - ACCEPT with Above OE S1 -> DIC3 (to CS),RFQ di state DIC2 - VD/VA offer with price > OE S1,"1. DIC lihat offer dengan price > OE
+2. DIC memilih APPROVE VD (above OE)
+3. DIC Submit","1. Status berubah ke DIC3 (Waiting CS)
+2. Next: CS2
+3. Offer passed OE check",OPEN,DIC3 - Approve VD > OE,
+"Sebagai DIC, saya ingin ACCEPT dengan option APPROVE VD (below OE S1)",P0-001-TC067,Positive,DIC2 - ACCEPT with Below OE S1 -> DIC4 (to CL),RFQ di state DIC2 - offer with price <= OE S1,"1. DIC lihat offer dengan price <= OE
+2. DIC memilih APPROVE VD (below OE)
+3. DIC Submit","1. Status berubah ke DIC4 (Waiting CL)
+2. Next: CL1
+3. Lead to Management",OPEN,DIC4 - Approve VD <= OE,
+"Sebagai DIC, saya ingin ACCEPT dengan option APPROVE VA (above OE)",P0-001-TC068,Positive,DIC2 - ACCEPT with VA (above OE) -> DIC7 (to CS),RFQ di state DIC2 - offer from VA with price > OE,"1. DIC lihat offer dari VA > OE
+2. DIC memilih APPROVE VA (above OE)
+3. DIC Submit","1. Status berubah ke DIC7 (Waiting CS)
+2. Next: CS2
+3. Offer passed OE check",OPEN,DIC7 - Approve VA > OE,
+"Sebagai DIC, saya ingin ACCEPT dengan option APPROVE VA (below OE)",P0-001-TC069,Positive,DIC2 - ACCEPT with VA (below OE) -> DIC8 (to CL),RFQ di state DIC2 - offer from VA with price <= OE,"1. DIC lihat offer dari VA <= OE
+2. DIC memilih APPROVE VA (below OE)
+3. DIC Submit","1. Status berubah ke DIC8 (Waiting CL)
+2. Next: CL2
+3. Lead to Management",OPEN,DIC8 - Approve VA <= OE,
+"Sebagai DIC, saya ingin ACCEPTTING dengan option REQUEST REVISI VA -> back ke vendor",P0-001-TC070,Positive,DIC2 - REQUEST REVISI VA -> DIC9 -> V23 (back to Vendor),RFQ di state DIC2 - VA offer,"1. DIC melihat offer tidak sesuai
+2. DIC klik REQUEST REVISI
+3. DIC isi alasan
+4. DIC Submit","1. Status berubah ke DIC9
+2. RFQ kembali ke vendor V23
+3. Vendor dapat revised quote",OPEN,DIC9 - Request Revise VA,
+"Sebagai DIC, saya ingin ACCEPTTING dengan option REQUEST REVISI VD (S1) - back ke vendor",P0-001-TC071,Edge Case,DIC2 - REQUEST REVISI VD (S1) -> DIC10 -> V22 (back to Vendor),RFQ di state DIC2 - VD direct offer (S1),"1. DIC melihat VD offer tidak sesuai
+2. DIC klik REQUEST REVISI VD (S1)
+3. DIC isi alasan
+4. DIC Submit","1. Status berubah ke DIC10
+2. RFQ kembali ke V22
+3. Vendor dapat revised quote",OPEN,DIC10 - Request Revise VD S1,
+"Sebagai DIC, saya ingin ACCEPTTING dengan option PR REVISION -> ke CS",P0-001-TC072,Positive,DIC2 - PR REVISION -> DIC12 -> CS7 (to CS),RFQ di state DIC2 - perlu revision entire PR,"1. DIC klik PR REVISION
+2. DIC submit
+3. Sistem proses","1. Status berubah ke DIC12
+2. Next: CS7 (Surrogate)
+3. RFQ keluar dari flow normal",OPEN,DIC12 - PR Revision,
+"Sebagai CS, saya ingin RESEND RFQ ke VD (dari VD decline) - CS3",P0-001-TC073,Positive,CS2 - RESEND RFQ VD (S1) -> CS3 -> V22 (back to Vendor),RFQ di state CS2 - dari VD decline,"1. CS lihat RFQ dari vendor D decline
+2. CS klik RESEND RFQ VD (S1)
+3. CS Submit","1. Status berubah ke CS3
+2. RFQ dikirim ke vendor baru V22
+3. Vendor dapat quote",OPEN,CS3 - Resend RFQ VD,
+"Sebagai CS, saya ingin RESEND RFQ ke VD (dari V decline) - CS4",P0-001-TC074,Positive,CS2 - RESEND RFQ VD (S3) -> CS4 -> V22 (back to Vendor),RFQ di state CS2 - dari V1-V17 decline,"1. CS lihat RFQ dari vendor decline
+2. CS klik RESEND RFQ VD (S3)
+3. CS Submit","1. Status berubah ke CS4
+2. RFQ dikirim ke vendor V22
+3. Vendor dapat quote",OPEN,CS4 - Resend RFQ VD S3,
+"Sebagai CS, saya ingin RESEND RFQ ke VA - CS5",P0-001-TC075,Positive,CS2 - RESEND RFQ VA (S2) -> CS5 -> VA1 (to Vendor Aggregator),RFQ di state CS2,"1. CS klik RESEND RFQ VA (S2)
+2. CS Submit","1. Status berubah ke CS5
+2. RFQ dikirim ke VA1
+3. Vendor Aggregator dapat quote",OPEN,CS5 - Resend RFQ VA,
+"Sebagai CS, saya ingin RESEND RFQ ke VA (S3) - CS6",P0-001-TC076,Positive,CS2 - RESEND RFQ VA (S3) -> CS6 -> V23 (Vendor Expiry),RFQ di state CS2,"1. CS klik RESEND RFQ VA (S3)
+2. CS Submit","1. Status berubah ke CS6
+2. RFQ dikirim ke V23
+3. Vendor dapat quote",OPEN,CS6 - Resend RFQ VA S3,
+"Sebagai CS, saya ingin NO ACTION - trigger Manual Sourcing (CS10-17)",P0-001-TC077,Edge Case,CS2 - NO ACTION -> CS10/S11 -> END (Manual Sourcing),"RFQ di state CS2, CS TIDAK action dalam SLA","1. Sistem detect CS expired
+2. Cron job trigger
+3. Auto Manual Sourcing","1. Status berubah ke CS10/CS11
+2. Next: END (Manual Sourcing)
+3. Log_sla tercatat",OPEN,CS10/CS11 - Auto Manual Sourcing,
+"Sebagai CL, saya ingin APPROVE dari CS (VD path) - CL3",P0-001-TC078,Positive,CL1 - APPROVE VD -> CL3 -> MG1 (Waiting Management),RFQ di state CL1 - dari CS3/CS6/CS7/CS8/CS9 (VD path),"1. CL lihat RFQ dari CS (VD Path)
+2. CL review brand, garansi, SLOC
+3. CL klik APPROVE
+4. CL Submit","1. Status berubah ke CL3
+2. Next: MG1 (Waiting Management)
+3. Management dapat review",OPEN,CL3 - Approve VD path,
+"Sebagai CL, saya ingin APPROVE dari CS (VA path) - CL4",P0-001-TC079,Positive,CL2 - APPROVE VA -> CL4 -> MG2 (Waiting Management),RFQ di state CL2 - dari CS6/CS8/CS9 (VA path),"1. CL lihat RFQ dari CS (VA path)
+2. CL review offer
+3. CL klik APPROVE
+4. CL Submit","1. Status berubah ke CL4
+2. Next: MG2 (Waiting Management)
+3. Management dapat review",OPEN,CL4 - Approve VA path,
+"Sebagai CL, saya ingin NO ACTION - CL6 -> Manual Sourcing",P0-001-TC080,Positive,CL1/CL2 - NO ACTION -> CL6 -> END (Manual Sourcing),"RFQ di state CL1/CL2, CL TIDAK action dalam SLA","1. Sistem detect CL expired
+2. Cron job trigger
+3. Auto Manual Sourcing","1. Status berubah ke CL6
+2. Next: END
+3. Log_sla tercatat",OPEN,CL6 - Auto Manual Sourcing,
+"Sebagai MG, saya ingin APPROVE dari CL (VD path) - MG3",P0-001-TC081,Positive,MG1 - APPROVE VD -> MG3 -> END (PO Publish),RFQ di state MG1 - dari CL3 (VD path),"1. MG lihat RFQ dari CL3
+2. MG review complete offer (brand, garansi, SLOC)
+3. MG klik APPROVE
+4. MG Submit","1. Status berubah ke MG3
+2. PO ter-generate
+3. Material PO text: brand, garansi, detail_alamat
+4. END - PO Publish",OPEN,MG3 - PO Publish VD,
+"Sebagai MG, saya ingin APPROVE dari CL (VA path) - MG4",P0-001-TC082,Positive,MG2 - APPROVE VA -> MG4 -> END (PO Publish),RFQ di state MG2 - dari CL4 (VA path),"1. MG lihat RFQ dari CL4
+2. MG review offer
+3. MG klik APPROVE
+4. MG Submit","1. Status berubah ke MG4
+2. PO ter-generate
+3. Material PO text includes brand, garansi, detail_alamat
+4. END - PO Publish",OPEN,MG4 - PO Publish VA,
+"Sebagai MG, saya ingin NO ACTION - MG6 -> Manual Sourcing",P0-001-TC083,Positive,MG1/MG2 - NO ACTION -> MG6 -> END (Manual Sourcing),"RFQ di state MG1/MG2, MG TIDAK action dalam SLA","1. Sistem detect MG expired
+2. Cron job trigger
+3. Auto Manual Sourcing","1. Status berubah ke MG6
+2. Next: END (Manual Sourcing)
+3. Log_sla tercatat",OPEN,MG6 - Auto Manual Sourcing,
+"Sebagai sistem, saya ingin AUTO SEND reminder email ke VD yang belum quote",P0-001-TC084,Positive,Reminder interval VD - semua state VD1-VD5,"RFQ di state VD (Waiting Vendor), belum ada action","1. Cron job check interval (every 1 jam/hari)
+2. Sistem detect belum submit
+3. Kirim reminder email ke vendor","1. Email reminder terkirim
+2. Link RFQ masih aktif
+3. Vendor dapat still submit
+4. Log_email tracked",OPEN,Email reminder feature,
+"Sebagai sistem, saya ingin AUTO EXPIRED VD - trigger ke next state",P0-001-TC085,Positive,VD1 expired SLA -> otomatis ke V1 (Vendor Expiry S3),"RFQ di state VD1, SLA expired (3 hari kerja)","1. Cron job check SLA
+2. VD1 lead_time >= SLA_config
+3. Status auto-change ke V1
+4. Email notification ke new vendor list","1. Status berubah ke V1
+2. RFQ available untuk vendor baru
+3. Log_sla updated
+4. Lead_time_regular exclude weekend",OPEN,Auto expiry - exclude weekend,
+"Sebagai sistem, saya ingin AUTO EXPIRED DIC - trigger Manual Sourcing",P0-001-TC086,Positive,DIC1 expired SLA -> DIC13 -> Auto Manual Sourcing,"RFQ di state DIC1, DIC TIDAK confirm dalam SLA","1. Cron job check DIC SLA
+2. DIC1 lead_time >= SLA_config
+3. Auto Manual Sourcing triggered","1. Status berubah ke DIC13
+2. RFQ END (Manual Sourcing)
+3. Log_sla with Auto Manual Reason
+4. Admin notification",OPEN,DIC1 auto Manual Sourcing - P1-013,
+"Sebagai vendor, saya ingin SUBMIT dari state V22 (dari DIC Request Revision VD S1)",P0-001-TC087,Positive,V22 - Not yet Action (S1) -> from DIC Request Revision -> Vendor ACCEPT -> V23,RFQ di state V22 - dari DIC10 (Request Revisi VD S1),"1. Vendor menerima RFQ untuk revised quote
+2. Vendor lihat brand, garansi, SLOC sebelumnya
+3. Vendor input updated quotation
+4. Vendor ACCEPT
+5. Vendor Submit","1. Status berubah ke V23
+2. Next: DIC1 (Waiting DIC)
+3. Data offer updated",OPEN,V22 -> V23 path,
+"Sebagai vendor, saya ingin SUBMIT NEED CONFIRMATION dari state V22",P0-001-TC088,Positive,V22 - Vendor NEED CONFIRMATION -> V24,RFQ di state V22,"1. Vendor tidak yakin spesifikasi lagi
+2. Vendor NEED CONFIRMATION
+3. Vendor Submit","1. Status berubah ke V24
+2. Next: DIC1",OPEN,V22 -> V24 path,
+"Sebagai vendor, saya ingin DECLINE dari state V22",P0-001-TC089,Positive,V22 - Vendor DECLINE -> V25 -> CS,RFQ di state V22,"1. Vendor tidak bisa quote
+2. Vendor DECLINE
+3. Vendor Submit","1. Status berubah ke V25 (No Quote)
+2. Next: CS (Manual Sourcing)
+3. Vendor offer null",OPEN,V22 -> V25 -> CS,
+"Sebagai vendor, saya ingin NO ACTION dari state V22",P0-001-TC090,Positive,V22 - NO ACTION -> V26 -> V1 (auto expiry),"RFQ di state V22, vendor TIDAK action","1. Vendor TIDAK action dalam SLA
+2. Cron job auto-trigger
+3. Status berubah ke V26","1. Status berubah ke V26
+2. Next: V1 (Vendor Expiry S3)
+3. RFQ available untuk vendor baru",OPEN,V22 -> V26 -> V1 auto,
+"Sebagai vendor, saya ingin SUBMIT dari state V27 (Not yet Action S2)",P0-001-TC091,Positive,V27 - Not yet Action (S2) -> Vendor action -> DIC5 or CS2,RFQ di state V27 - VD5/VA5 expired to S2,"1. Vendor menerima RFQ
+2. Vendor submit quotation (brand, garansi, SLOC)
+3. Vendor Submit","1. Status berubah ke DIC5 (if DIC confirms) or CS2
+2. Various paths available",OPEN,V27 complex path,
+"Sebagai DIC, saya ingin ACCEPT dengan option APPROVE VD (below OE S2) -> CL1",P0-001-TC092,Positive,DIC1 - ACCEPT with Below OE S2 -> DIC6 -> CL1,RFQ di state DIC1 - VD offer with price <= OE S2,"1. DIC lihat offer price <= OE S2
+2. DIC pilih APPROVE VD (below OE S2)
+3. DIC Submit","1. Status berubah ke DIC6
+2. Next: CL1 (Waiting CL)
+3. Lead to Management without CS step",OPEN,DIC6 - bypass CS,
+"Sebagai CS, saya ingin REVISI OE - RFQ kembali ke DIC",P0-001-TC093,Positive,CS2 - REVISI OE -> CS8 -> DIC8 (back to DIC),RFQ di state CS2 - DIC action triggered,"1. CS klik REVISI OE
+2. CS Submit","1. Status berubah ke CS8
+2. Next: DIC8 (Waiting DIC)
+3. DIC dapat review ulang",OPEN,CS8 - Revisi OE flow,
+"Sebagai DIC, saya ingin APPROVE OE REVISION dari CS",P0-001-TC094,Positive,DIC8 - APPROVE OE REVISION -> CL1 (from CS8),RFQ di state DIC8 - dari CS8 Revisi OE,"1. DIC lihat revised OE quotation
+2. DIC APPROVE OE REVISION
+3. DIC Submit","1. Status berubah ke CL1
+2. Next: CL1 -> CL3 -> MG1
+3. Full approval path",OPEN,DIC8 - Approve OE Revision,Fitur OE Revision masih di-hide dan belum tau kapan akan dibuka kembali.
+"Sebagai CS, saya ingin APPROVE OE REVISION - CS9",P0-001-TC095,Positive,CS2 - APPROVE OE REVISION -> CS9 -> CL1,RFQ di state CS2 - DIC action,"1. CS klik APPROVE OE REVISION
+2. CS Submit","1. Status berubah ke CS9
+2. Next: CL1
+3. Full approval path",OPEN,CS9 - Approve OE Revision,Fitur OE Revision masih di-hide dan belum tau kapan akan dibuka kembali.
+"Sebagai sistem, saya ingin AUTO MANUAL SOURCING - VD Decline & No Submit (CS12)",P0-001-TC096,Positive,CS2 -> CS12 -> END - Auto Manual Sourcing (Vendor Decline),"RFQ di state CS2, CS TIDAK action, semua VD decline/no submit","1. Sistem detect CS expired
+2. Semua VD tidak offer
+3. Trigger Auto Manual Sourcing","1. Status berubah ke CS12
+2. Next: END (Manual Sourcing)
+3. Reason: 'Auto Manual Sourcing Vendor Decline'
+4. Log_sla recorded submilestone Manual Sourcing",OPEN,CS12 - Auto Manual Sourcing,
+"Sebagai sistem, saya ingin AUTO MANUAL SOURCING - VD Decline & Not Submit (CS13)",P0-001-TC097,Positive,CS2 -> CS13 -> END - Auto Manual Sourcing (V19 path),"RFQ dari V19 (Decline, No Action)","1. Sistem detect CS expired
+2. Trigger Auto Manual Sourcing","1. Status berubah ke CS13
+2. Next: END
+3. Reason: 'Auto Manual Sourcing Vendor Decline & Not Submit'
+4. Log_sla recorded submilestone Manual Sourcing",OPEN,CS13,
+"Sebagai sistem, saya ingin AUTO MANUAL SOURCING - VD Decline (CS14)",P0-001-TC098,Edge Case,CS2 -> CS14 -> END - Auto Manual Sourcing (V20 path),"RFQ dari V20 (No Action, Decline)","1. Sistem auto trigger
+2. Manual Sourcing","1. Status berubah ke CS14
+2. Next: END
+3. Reason: 'Auto Manual Sourcing Vendor Decline & Not Submit'
+4. Log_sla recorded submilestone Manual Sourcing",OPEN,CS14,
+"Sebagai sistem, saya ingin AUTO MANUAL SOURCING - VD Not Submit (CS15)",P0-001-TC099,Positive,CS2 -> CS15 -> END - Auto Manual Sourcing (V21 path),"RFQ dari V21 (No Action, No Action)","1. Sistem auto trigger
+2. Manual Sourcing","1. Status berubah ke CS15
+2. Next: END
+3. Reason: 'Auto Manual Sourcing Vendor Not Submit'
+4. Log_sla recorded submilestone Manual Sourcing",OPEN,CS15,
+"Sebagai sistem, saya ingin AUTO MANUAL SOURCING - Price Above OE (CS16)",P0-001-TC100,Positive,CS2 -> CS16 -> END - Auto Manual Sourcing (Price Above OE),RFQ dengan semua offer price > OE,"1. Sistem detect price > OE
+2. Cannot proceed to PO
+3. Auto Manual Sourcing","1. Status berubah ke CS16
+2. Next: END
+3. Reason: 'Auto Manual Sourcing Price Above OE'
+4. Log_sla recorded submilestone Manual Sourcing",OPEN,CS16 - P1-012,
+"Sebagai CS, saya ingin MANUAL SOURCING - CS17",P0-001-TC101,Positive,CS2 -> CS17 -> END - Manual Sourcing (manual trigger),RFQ di state CS2,"1. CS klik button MANUAL SOURCING
+2. CS Submit","1. Status berubah ke CS17
+2. Next: END
+3. RFQ keluar dari AI-Gen flow
+4. Log_sla recorded submilestone Manual Sourcing",OPEN,CS17 - Manual trigger,
+"Sebagai CL, saya ingin MANUAL SOURCING - CL5",P0-001-TC102,Positive,CL1/CL2 -> CL5 -> END - Manual Sourcing,RFQ di state CL1/CL2,"1. CL klik button MANUAL SOURCING
+2. CL Submit","1. Status berubah ke CL5
+2. Next: END
+3. RFQ keluar flow
+4. Log_sla recorded submilestone Manual Sourcing",OPEN,CL5 - Manual Sourcing,
+"Sebagai MG, saya ingin MANUAL SOURCING - MG5",P0-001-TC103,Positive,MG1/MG2 -> MG5 -> END - Manual Sourcing,RFQ di state MG1/MG2,"1. MG klik button MANUAL SOURCING
+2. MG Submit","1. Status berubah ke MG5
+2. Next: END
+3. RFQ exit AI-Gen
+4. Log_sla recorded submilestone Manual Sourcing",OPEN,MG5 - Manual Sourcing,
+"Sebagai sistem, saya ingin TRACK semua lead_time dan lead_time_regular dengan exclude weekend",P0-001-TC104,Positive,Log SLA tracking dengan dua kolom lead time,RFQ berganti status di berbagai state,"1. RFQ transition dari satu state ke state lain
+2. Sistem catat timestamp start dan end
+3. Sistem hitung lead_time (include weekend)
+4. Sistem hitung lead_time_regular (exclude weekend)","1. Log_sla tercatat untuk setiap transition
+2. Kolom lead_time = hari kalendar
+3. Kolom lead_time_regular = hari kerja (exclude Sab/Min)
+4. Timestamp akurat",OPEN,P0-005 - Hari Kerja feature,
+"Sebagai sistem, saya ingin TRACK LOG ketika DIC REQUEST REVISION - V23/V24",P0-001-TC105,Positive,Log SLA tracking untuk Request Revision loop,RFQ dari V22 dengan DIC10 trigger,"1. DIC10 trigger ke V22
+2. Vendor submit ke V23/V24
+3. DIC confirm ke DIC1
+4. Sistem catat semua transition pada log_sla","1. Log_sla lengkap untuk setiap step
+2. Loop counted (VD -> DIC -> VD)
+3. Lead time recorded
+4. No duplicate entries",OPEN,Request Revision loop tracking,
+"Sebagai sistem, saya ingin PREVENT DUPLICATE EMAIL - setiap event hanya kirim 1 email",P0-001-TC106,Negative,Prevent duplicate email notification,RFQ transition triggered email notification,"1. RFQ transition (contoh: DIC1 -> DIC2)
+2. Sistem trigger email notification
+3. Sistem cek apakah email sudah pernah terkirim untuk event ini","1. Email terkirim HANYA 1x per event
+2. Tidak ada duplicate email
+3. Log_email recorded
+4. Recipient sesuai role",OPEN,P1-013 - Prevent duplicate email,
+"Sebagai vendor, saya ingin CEK konsistensi brand request vs offer di SEMUA halaman",P0-001-TC107,Positive,Brand deviation visible di semua approval stages,Vendor submit quotation dengan brand berbeda dari request,"1. Vendor submit dengan brand A (request: brand B)
+2. DIC review -> brand deviation visible
+3. CS review -> brand deviation visible
+4. CL review -> brand deviation visible
+5. MG review -> brand deviation visible
+6. CS - Price not match review -> brand deviation visible
+7. CS - Surrogate review -> brand deviation visible
+8. CS - OE Revision review -> brand deviation visible","1. Semua halaman menampilkan brand deviation
+2. Warna indicator konsisten
+3. Deviasi text konsisten: 'sama dengan PR' or 'berbeda dengan PR'",OPEN,Consistency check across all pages,
+"Sebagai vendor, saya ingin CEK konsistensi garansi request vs offer di SEMUA halaman",P0-001-TC108,Positive,Garansi deviation visible di semua approval stages,Vendor submit quotation dengan garansi berbeda dari request,"1. Vendor submit dengan garansi 24 (request: 12)
+2. DIC review -> garansi deviation: '+12 bulan'
+3. CS review -> same
+4. CL review -> same
+5. MG review -> same
+6. CS - Price not match review -> same
+7. CS - Surrogate review -> same
+8. CS - OE Revision review -> same","1. Semua halaman menampilkan garansi deviation
+2. Format konsisten: '+X bulan' / '-X bulan' / '-'
+3. Warna indicator konsisten",OPEN,Consistency check garansi,

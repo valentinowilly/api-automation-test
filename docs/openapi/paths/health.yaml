@@ -1,0 +1,44 @@
+get:
+  tags:
+    - Health Check
+  summary: Health check endpoint
+  description: >
+    Returns the health status of the API server. This endpoint is unprotected and can be used for monitoring and load balancer health checks.
+  operationId: getHealth
+  responses:
+    '200':
+      description: Server is healthy and running
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../components/schemas/StandardResponse.yaml'
+              - type: object
+                properties:
+                  message:
+                    type: string
+                    example: "API is healthy"
+                  data:
+                    type: object
+                    example: {}
+          example:
+            message: "API is healthy"
+            data: {}
+    '500':
+      description: Server health check failed
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../components/schemas/StandardResponse.yaml'
+              - type: object
+                properties:
+                  message:
+                    type: string
+                    example: "API health check failed"
+                  data:
+                    type: object
+                    example: {}
+          example:
+            message: "API health check failed"
+            data: {}

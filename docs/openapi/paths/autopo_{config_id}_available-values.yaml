@@ -1,0 +1,76 @@
+get:
+  summary: Get available values (dropdown)
+  deprecated: false
+  description: ''
+  tags:
+    - Auto PO Configuration
+  parameters:
+    - name: config_id
+      in: path
+      description: ''
+      required: true
+      example: '37'
+      schema:
+        type: string
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                    id:
+                      type: integer
+                    config_condition:
+                      type: string
+                    available_values:
+                      type: array
+                      items:
+                        type: string
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+                    deleted_at:
+                      type: string
+                      nullable: true
+            required:
+              - message
+              - data
+          example:
+            message: Get Config Value
+            data:
+              id: 2
+              server_group: BCG
+              config_condition: plant_code
+              available_values:
+                - A100
+                - B100
+                - B300
+                - B400
+                - B500
+                - B600
+                - B700
+                - D100
+                - E100
+                - E200
+                - G100
+                - B200
+              created_at: '2026-03-09T20:50:55.000Z'
+              updated_at: '2026-03-09T20:50:55.000Z'
+              deleted_at: null
+      headers: {}
+    '401':
+      $ref: '../components/responses/ErrorResponses.yaml#/Unauthorized'
+    '400':
+      $ref: '../components/responses/ErrorResponses.yaml#/BadRequest'
+    '500':
+      $ref: '../components/responses/ErrorResponses.yaml#/InternalServerError'
+  security:
+    - bearer: []

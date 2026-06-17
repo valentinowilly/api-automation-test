@@ -1,0 +1,403 @@
+openapi: 3.0.1
+info:
+  title: AIGEN Backend API
+  description: >
+    Procurement System Backend API for managing Purchase Requests (PR),
+    Request for Quotations (RFQ), and Quotation Comparison Forms (QCF).
+
+    This system integrates with SAP and handles vendor quotation workflows through
+    automated email notifications and cron jobs.
+
+    ## Authentication
+
+    The API uses two authentication mechanisms:
+
+    1. **BearerAuth**: JWT token for dashboard users (CS/CL/DIC/Admin roles)
+       - Header: `Authorization: Bearer <token>`
+       - Obtained via `/auth/login` endpoint
+
+    2. **EmailTokenAuth**: JWT token for vendors and DIC users via email links
+       - Header: `Authorization: Bearer <token>` or token in URL path parameters
+       - Tokens are embedded in email notifications
+
+    ## Workflow Overview
+
+    The procurement workflow follows these stages:
+    1. Purchase Request (PR) creation
+    2. RFQ generation and vendor notification
+    3. Vendor quotation submission
+    4. DIC confirmation
+    5. CS/CL approval
+    6. QCF generation
+    7. SAP Auto PO synchronization
+
+    ## Base URL
+
+    Local development: `http://localhost:3000`
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development
+security:
+  - bearer: []
+tags:
+  - name: Health Check
+    description: System health monitoring endpoints for load balancers and monitoring tools
+  - name: Authentication
+    description: User authentication, login, and session management
+  - name: Authentication/New method
+    description: New authentication endpoints using improved security patterns
+  - name: Authentication/Reset Password new
+    description: New password reset flow with enhanced security
+  - name: Authentication/Old method (Deprecated)
+    description: Legacy authentication endpoints - deprecated, use new methods instead
+  - name: Auto PO Configuration
+    description: Configuration management for SAP Auto PO synchronization settings
+  - name: Email Notifications
+    description: Email notification sending and resending operations for RFQ workflows
+  - name: Purchase Requests
+    description: Purchase Request (PR) and Request for Quotation (RFQ) management
+  - name: Vendor Operations
+    description: Vendor quotation submission and RFQ item management
+  - name: DIC Operations
+    description: DIC (Division In Charge) confirmation and approval workflows
+  - name: CS Operations
+    description: CS (Central Sourcing) review, approval, and workflow management
+  - name: CL Operations
+    description: CL (Cost Leader) approval and QCF review operations
+  - name: Management Operations
+    description: Management-level QCF approval and oversight functions
+  - name: Admin Endpoints
+    description: Administrative operations for RFQ and QCF management
+  - name: QCF Management
+    description: Quotation Comparison Form (QCF) operations and workflows
+  - name: Cron Jobs & Manual Triggers
+    description: Automated job endpoints that can be manually triggered for testing or recovery
+  - name: Upload Management
+    description: File upload and deletion operations for documents, images, and evidence
+  - name: Access Control List (ACL)
+    description: Role-based access control management for users and permissions
+  - name: Access Control List (ACL)/Roles
+    description: Role CRUD operations for access control
+  - name: Access Control List (ACL)/Permissions
+    description: Permission CRUD operations for access control
+  - name: Endpoint generate data for testing
+    description: Test data generation endpoints for development and QA environments
+  - name: Mock
+    description: Mock data creation endpoints for testing RFQ workflows and scenarios
+  - name: Sourcing Reason
+    description: Sourcing reason configuration and management
+  - name: Master Data
+    description: Master data management for users, vendors, categories, and configurations
+  - name: Master Data/Users
+    description: User management and configuration
+  - name: Master Data/User Matrices
+    description: User matrix configuration for approval workflows
+  - name: Master Data/Divisions
+    description: Division master data management
+  - name: Master Data/Material Hierarchy
+    description: Material hierarchy and categorization management
+  - name: Master Data/Categories
+    description: Category master data and level management
+  - name: Master Data/Vendor
+    description: Vendor master data management
+  - name: Master Data/Material Assignment
+    description: Material assignment to categories and hierarchies
+  - name: Master Data/Matrix category
+    description: Category matrix configuration for approval routing
+  - name: Dashboard
+    description: Role-specific dashboard data for CS, CL, vendors, and management
+  - name: Dashboard/Admin
+    description: Administrative dashboard data for RFQ and QCF oversight
+paths:
+  /health:
+    $ref: paths/health.yaml
+  /auth/login/basic:
+    $ref: paths/auth_login_basic.yaml
+  /auth/me:
+    $ref: paths/auth_me.yaml
+  /auth/switch-role:
+    $ref: paths/auth_switch-role.yaml
+  /auth/login/oauth/google:
+    $ref: paths/auth_login_oauth_google.yaml
+  /auth/basic/forgot-password:
+    $ref: paths/auth_basic_forgot-password.yaml
+  /auth/basic/reset-password:
+    $ref: paths/auth_basic_reset-password.yaml
+  /auth/login:
+    $ref: paths/auth_login.yaml
+  /auth/forgot-password:
+    $ref: paths/auth_forgot-password.yaml
+  /auth/reset-password:
+    $ref: paths/auth_reset-password.yaml
+  /autopo/submitconfig:
+    $ref: paths/autopo_submitconfig.yaml
+  /autopo/updateconfig/{id}:
+    $ref: paths/autopo_updateconfig_{id}.yaml
+  /autopo/listsettingparam:
+    $ref: paths/autopo_listsettingparam.yaml
+  /autopo/submitsetting:
+    $ref: paths/autopo_submitsetting.yaml
+  /autopo/updatesetting/{id}:
+    $ref: paths/autopo_updatesetting_{id}.yaml
+  /autopo/{config_id}/available-values:
+    $ref: paths/autopo_{config_id}_available-values.yaml
+  /autopo/servers:
+    $ref: paths/autopo_servers.yaml
+  /autopo/config/{configType}/{serverGroup}/{configCondition}:
+    $ref: paths/autopo_config_{configType}_{serverGroup}_{configCondition}.yaml
+  /email/send-pr-received/{token}:
+    $ref: paths/email_send-pr-received_{token}.yaml
+  /email/send-request-for-quotation/{token}:
+    $ref: paths/email_send-request-for-quotation_{token}.yaml
+  /email/send-quotation-not-submitted/{token}:
+    $ref: paths/email_send-quotation-not-submitted_{token}.yaml
+  /email/send-pr-revised-qcf/{itemids}:
+    $ref: paths/email_send-pr-revised-qcf_{itemids}.yaml
+  /email/resend-request-for-quotation/{rfq_number}/{vendor_batch}/{vendor_code}:
+    $ref: >-
+      paths/email_resend-request-for-quotation_{rfq_number}_{vendor_batch}_{vendor_code}.yaml
+  /email/resend-failed:
+    $ref: paths/email_resend-failed.yaml
+  /email/resend-rfq-by-vendor/{rfq_number}/{vendor_batch}/{vendor_code}:
+    $ref: >-
+      paths/email_resend-rfq-by-vendor_{rfq_number}_{vendor_batch}_{vendor_code}.yaml
+  /pr/sap_sloc_list:
+    $ref: paths/pr_sap_sloc_list.yaml
+  /pr/listPR:
+    $ref: paths/pr_listPR.yaml
+  /pr/getDetailPR:
+    $ref: paths/pr_getDetailPR.yaml
+  /pr/getAllRFQ:
+    $ref: paths/pr_getAllRFQ.yaml
+  /pr/generateToken:
+    $ref: paths/pr_generateToken.yaml
+  /pr/listRFQ:
+    $ref: paths/pr_listRFQ.yaml
+  /pr/listRFQ2:
+    $ref: paths/pr_listRFQ2.yaml
+  /pr/listVendor:
+    $ref: paths/pr_listVendor.yaml
+  /pr/detail:
+    $ref: paths/pr_detail.yaml
+  /pr/vendor-matriks/{ext_mat_group}:
+    $ref: paths/pr_vendor-matriks_{ext_mat_group}.yaml
+  /pr/rfq-vendor-matriks/{rfq_number}:
+    $ref: paths/pr_rfq-vendor-matriks_{rfq_number}.yaml
+  /pr/sync_rfq:
+    $ref: paths/pr_sync_rfq.yaml
+  /pr/rfq/check-multi-vendor-pending/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_rfq_check-multi-vendor-pending_{rfq_number}_{vendor_batch}.yaml
+  /pr/vendor-dropdown/{external_material_group}:
+    $ref: paths/pr_vendor-dropdown_{external_material_group}.yaml
+  /pr/vendor/get_item_list_rfq/{vendor_code}/{rfq_number}/{vendor_batch}:
+    $ref: >-
+      paths/pr_vendor_get_item_list_rfq_{vendor_code}_{rfq_number}_{vendor_batch}.yaml
+  /pr/vendor/get_item_list_rfq/{token}:
+    $ref: paths/pr_vendor_get_item_list_rfq_{token}.yaml
+  /pr/vendor/submit_penawaran:
+    $ref: paths/pr_vendor_submit_penawaran.yaml
+  /pr/vendor/revisi_rfq:
+    $ref: paths/pr_vendor_revisi_rfq.yaml
+  /pr/dic/get_item_list_rfq/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_dic_get_item_list_rfq_{rfq_number}_{vendor_batch}.yaml
+  /pr/dic/konfirmasi_penawaran:
+    $ref: paths/pr_dic_konfirmasi_penawaran.yaml
+  /pr/dic/get_item_list_rfq/{token}:
+    $ref: paths/pr_dic_get_item_list_rfq_{token}.yaml
+  /pr/cs/not_submitted_items/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_not_submitted_items_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/declined_items/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_declined_items_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/declined_items/token/{token}:
+    $ref: paths/pr_cs_declined_items_token_{token}.yaml
+  /pr/cs/price_not_match/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_price_not_match_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/price_not_match/token/{token}:
+    $ref: paths/pr_cs_price_not_match_token_{token}.yaml
+  /pr/cs/send_surrogate/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_send_surrogate_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/surrogate_items/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_surrogate_items_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/send_revisi_oe/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_send_revisi_oe_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/oe_revision/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_oe_revision_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/oe_revision/token/{token}:
+    $ref: paths/pr_cs_oe_revision_token_{token}.yaml
+  /pr/cs/send_isourcing/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_send_isourcing_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/send_to_qcf/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_send_to_qcf_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/resend_rfq/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_resend_rfq_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/rfq_preview_form/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cs_rfq_preview_form_{rfq_number}_{vendor_batch}.yaml
+  /pr/cs/not_submitted_items/token/{token}:
+    $ref: paths/pr_cs_not_submitted_items_token_{token}.yaml
+  /pr/cl/need_approval_qcf/token/{token}:
+    $ref: paths/pr_cl_need_approval_qcf_token_{token}.yaml
+  /pr/cl/need_approval_items/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cl_need_approval_items_{rfq_number}_{vendor_batch}.yaml
+  /pr/cl/need_approval_qcf/{qcf_number}:
+    $ref: paths/pr_cl_need_approval_qcf_{qcf_number}.yaml
+  /pr/cl/approve_items/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_cl_approve_items_{rfq_number}_{vendor_batch}.yaml
+  /pr/cl/approve_qcf/{qcf_number}:
+    $ref: paths/pr_cl_approve_qcf_{qcf_number}.yaml
+  /pr/management/need_approval_qcf/token/{token}:
+    $ref: paths/pr_management_need_approval_qcf_token_{token}.yaml
+  /pr/management/need_approval_qcf/{qcf_number}:
+    $ref: paths/pr_management_need_approval_qcf_{qcf_number}.yaml
+  /pr/management/approve_qcf/{qcf_number}:
+    $ref: paths/pr_management_approve_qcf_{qcf_number}.yaml
+  /pr/admin/listQCF:
+    $ref: paths/pr_admin_listQCF.yaml
+  /pr/admin/listRFQ:
+    $ref: paths/pr_admin_listRFQ.yaml
+  /pr/listQCF:
+    $ref: paths/pr_listQCF.yaml
+  /pr/rfq/handle-expired-management-review:
+    $ref: paths/pr_rfq_handle-expired-management-review.yaml
+  /pr/rfq/send-3-day-reminders:
+    $ref: paths/pr_rfq_send-3-day-reminders.yaml
+  /pr/rfq/send-6-day-reminders:
+    $ref: paths/pr_rfq_send-6-day-reminders.yaml
+  /pr/rfq/notify-single-submission/{days}:
+    $ref: paths/pr_rfq_notify-single-submission_{days}.yaml
+  /pr/rfq/handle-9-day-follow-up:
+    $ref: paths/pr_rfq_handle-9-day-follow-up.yaml
+  /pr/rfq/send-dic-reminders:
+    $ref: paths/pr_rfq_send-dic-reminders.yaml
+  /pr/rfq/handle-single-submission-follow-up/{days}:
+    $ref: paths/pr_rfq_handle-single-submission-follow-up_{days}.yaml
+  /pr/rfq/handle-declined-pending-follow-up:
+    $ref: paths/pr_rfq_handle-declined-pending-follow-up.yaml
+  /pr/resend-email/{rfq_number}/{vendor_batch}:
+    $ref: paths/pr_resend-email_{rfq_number}_{vendor_batch}.yaml
+  /upload/images:
+    $ref: paths/upload_images.yaml
+  /upload/evidences:
+    $ref: paths/upload_evidences.yaml
+  /upload/image:
+    $ref: paths/upload_image.yaml
+  /upload/document:
+    $ref: paths/upload_document.yaml
+  /upload/evidence:
+    $ref: paths/upload_evidence.yaml
+  /upload/files:
+    $ref: paths/upload_files.yaml
+  /acl/roles:
+    $ref: paths/acl_roles.yaml
+  /acl/roles/{role_id}:
+    $ref: paths/acl_roles_{role_id}.yaml
+  /acl/permissions:
+    $ref: paths/acl_permissions.yaml
+  /acl/permissions/{permission_id}:
+    $ref: paths/acl_permissions_{permission_id}.yaml
+  /pr/generateTokenRFQ:
+    $ref: paths/pr_generateTokenRFQ.yaml
+  /pr/get-test-data-rfq:
+    $ref: paths/pr_get-test-data-rfq.yaml
+  /pr/qcf/pending_approval:
+    $ref: paths/pr_qcf_pending_approval.yaml
+  /pr/dic/list-pending-rfq:
+    $ref: paths/pr_dic_list-pending-rfq.yaml
+  /mock/search-library:
+    $ref: paths/mock_search-library.yaml
+  /mock/rfq:
+    $ref: paths/mock_rfq.yaml
+  /mock/rfq/batch:
+    $ref: paths/mock_rfq_batch.yaml
+  /mock/rfq/templates:
+    $ref: paths/mock_rfq_templates.yaml
+  /mock/rfq/{rfq_number}:
+    $ref: paths/mock_rfq_{rfq_number}_delete.yaml
+  /pr/sourcing-reason:
+    $ref: paths/pr_sourcing-reason.yaml
+  /master/users:
+    $ref: paths/master_users.yaml
+  /master/users/types:
+    $ref: paths/master_users_types.yaml
+  /master/users/{user_id}:
+    $ref: paths/master_users_{user_id}.yaml
+  /master/users/matrices:
+    $ref: paths/master_users_matrices.yaml
+  /master/users/matrices/{user_matrix_id}:
+    $ref: paths/master_users_matrices_{user_matrix_id}.yaml
+  /master/divisions:
+    $ref: paths/master_divisions.yaml
+  /master/master-hierarchy:
+    $ref: paths/master_master-hierarchy.yaml
+  /master/master-hierarchy/{id}:
+    $ref: paths/master_master-hierarchy_{id}.yaml
+  /master/master-hierarchy/server-groups:
+    $ref: paths/master_master-hierarchy_server-groups.yaml
+  /master/categories:
+    $ref: paths/master_categories.yaml
+  /master/categories/levels:
+    $ref: paths/master_categories_levels.yaml
+  /master/categories/{id}:
+    $ref: paths/master_categories_{id}.yaml
+  /master/vendors:
+    $ref: paths/master_vendors.yaml
+  /master/vendors/{id}:
+    $ref: paths/master_vendors_{id}.yaml
+  /master/material-assignments:
+    $ref: paths/master_material-assignments.yaml
+  /master/material-assignments/server-groups:
+    $ref: paths/master_material-assignments_server-groups.yaml
+  /master/category-matrices:
+    $ref: paths/master_category-matrices.yaml
+  /master/category-matrices/{id}:
+    $ref: paths/master_category-matrices_{id}.yaml
+  /pr/dashboard-admin-rfq:
+    $ref: paths/pr_dashboard-admin-rfq.yaml
+  /pr/dashboard-admin-qcf:
+    $ref: paths/pr_dashboard-admin-qcf.yaml
+  /pr/dashboard-cs:
+    $ref: paths/pr_dashboard-cs.yaml
+  /pr/dashboard-cl:
+    $ref: paths/pr_dashboard-cl.yaml
+  /pr/dashboard-management:
+    $ref: paths/pr_dashboard-management.yaml
+  /pr/dashboard-user:
+    $ref: paths/pr_dashboard-user.yaml
+  /pr/dashboard-vendor:
+    $ref: paths/pr_dashboard-vendor.yaml
+components:
+  schemas:
+    StandardResponse:
+      $ref: components/schemas/StandardResponse.yaml
+    PaginatedResponse:
+      $ref: components/schemas/PaginatedResponse.yaml
+    ErrorResponse:
+      $ref: components/schemas/ErrorResponse.yaml
+    BaseModel:
+      $ref: components/schemas/BaseModel.yaml
+    PaginationMeta:
+      $ref: components/schemas/PaginationMeta.yaml
+    Permission:
+      $ref: components/schemas/Permission.yaml
+    Role:
+      $ref: components/schemas/Role.yaml
+  responses:
+    BadRequest:
+      $ref: components/responses/ErrorResponses.yaml#/BadRequest
+    Unauthorized:
+      $ref: components/responses/ErrorResponses.yaml#/Unauthorized
+    Forbidden:
+      $ref: components/responses/ErrorResponses.yaml#/Forbidden
+    NotFound:
+      $ref: components/responses/ErrorResponses.yaml#/NotFound
+    InternalServerError:
+      $ref: components/responses/ErrorResponses.yaml#/InternalServerError
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      description: JWT token for dashboard users (CS/CL/DIC/Admin roles). Obtained via `/auth/login/basic` or `/auth/login/oauth/google` endpoints.
+    emailToken:
+      type: http
+      scheme: bearer
+      description: JWT token for vendors and DIC users via email links. Tokens are embedded in email notifications and validated against business day expiry (excludes weekends). Note that some endpoints accept this token as a path parameter instead of in the Authorization header.

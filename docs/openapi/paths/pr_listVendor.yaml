@@ -1,0 +1,27 @@
+get:
+  summary: List vendors for materials
+  deprecated: false
+  description: |
+    Retrieve vendor-material mapping list.
+  operationId: listVendor
+  tags:
+    - Purchase Requests
+  parameters: []
+  responses:
+    '200':
+      description: Vendors retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: array
+                items:
+                  type: object
+                  properties: {}
+      headers: {}
+  security:
+    - bearer: []

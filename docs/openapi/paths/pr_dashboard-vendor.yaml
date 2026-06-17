@@ -1,0 +1,522 @@
+get:
+  summary: Dashboard Vendor
+  deprecated: false
+  description: ''
+  tags:
+    - Dashboard
+  parameters:
+    - name: page
+      in: query
+      description: ''
+      required: false
+      example: '1'
+      schema:
+        type: string
+    - name: limit
+      in: query
+      description: ''
+      required: false
+      example: '10'
+      schema:
+        type: string
+    - name: status_filter
+      in: query
+      description: ''
+      required: false
+      example: Need Action
+      schema:
+        type: string
+        enum:
+          - Need Action
+          - Waiting User
+          - Waiting Procurement
+          - PO Published
+          - Manual Sourcing
+          - Waiting CS
+          - Not Awarded
+    - name: action_filter
+      in: query
+      description: ''
+      required: false
+      example: Submit RFQ
+      schema:
+        type: string
+        enum:
+          - Submit RFQ
+          - Request Revise
+    - name: sort
+      in: query
+      description: ''
+      required: false
+      example: rfq_number
+      schema:
+        type: string
+        enum:
+          - rfq_number
+          - pr_number
+          - sla
+          - status
+          - action
+          - pr_release_date
+    - name: order
+      in: query
+      description: ''
+      required: false
+      example: asc
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+    - name: search
+      in: query
+      description: ''
+      required: false
+      schema:
+        type: string
+    - name: date_to
+      in: query
+      description: ''
+      required: false
+      example: '2026-02-10'
+      schema:
+        type: string
+    - name: date_from
+      in: query
+      description: ''
+      required: false
+      example: '2026-02-10'
+      schema:
+        type: string
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  summary:
+                    type: object
+                    properties:
+                      total_rfq:
+                        type: integer
+                      total_items:
+                        type: integer
+                      need_action:
+                        type: integer
+                      waiting:
+                        type: integer
+                      po_published_items:
+                        type: integer
+                      manual_sourcing:
+                        type: integer
+                    required:
+                      - total_rfq
+                      - total_items
+                      - need_action
+                      - waiting
+                      - po_published_items
+                      - manual_sourcing
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rfq_number:
+                          type: string
+                        pr_number:
+                          type: string
+                        server_groups:
+                          type: string
+                        vendor_code:
+                          type: string
+                        vendor_name:
+                          type: string
+                        vendor_batch:
+                          type: integer
+                        submission_deadline:
+                          type: string
+                          nullable: true
+                        submission_deadline_remaining_days:
+                          type: integer
+                          nullable: true
+                        cs_name:
+                          type: string
+                        cs_email:
+                          type: string
+                        pr_creator_email:
+                          type: string
+                        pr_requestor_email:
+                          type: string
+                        status_vendor:
+                          type: integer
+                        status_dic:
+                          type: integer
+                          nullable: true
+                        dic_token:
+                          type: string
+                          nullable: true
+                        milestone_id:
+                          type: integer
+                        status_milestone:
+                          type: string
+                        status_submilestone:
+                          type: string
+                        status:
+                          type: string
+                        status_group:
+                          type: string
+                        action:
+                          type: string
+                          nullable: true
+                        items:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              quantity:
+                                type: integer
+                              item_code:
+                                type: string
+                              item_text:
+                                type: string
+                            required:
+                              - quantity
+                              - item_code
+                              - item_text
+                      required:
+                        - rfq_number
+                        - pr_number
+                        - server_groups
+                        - vendor_code
+                        - vendor_name
+                        - vendor_batch
+                        - submission_deadline
+                        - submission_deadline_remaining_days
+                        - cs_name
+                        - cs_email
+                        - pr_creator_email
+                        - pr_requestor_email
+                        - status_vendor
+                        - status_dic
+                        - dic_token
+                        - milestone_id
+                        - status_milestone
+                        - status_submilestone
+                        - status
+                        - status_group
+                        - action
+                        - items
+                  pagination:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      itemsPerPage:
+                        type: integer
+                    required:
+                      - totalItems
+                      - totalPages
+                      - currentPage
+                      - itemsPerPage
+                required:
+                  - summary
+                  - data
+                  - pagination
+            required:
+              - message
+              - data
+          example:
+            message: Get All Data RFQ
+            data:
+              summary:
+                total_rfq: 79
+                total_items: 182
+                need_action: 8
+                waiting: 70
+                po_published_items: 0
+                manual_sourcing: 1
+              data:
+                - rfq_number: RFQ0000677
+                  pr_number: '080226001'
+                  server_groups: BCG
+                  vendor_code: '101839'
+                  vendor_name: MULTI TEKHNIK JAYA, CV (Level 1)
+                  vendor_batch: 2
+                  submission_deadline: '2026-03-29T17:00:00.000Z'
+                  submission_deadline_remaining_days: 24
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 1
+                  status_dic: null
+                  dic_token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZnFfbnVtYmVyIjoiUkZRMDAwMDY3NyIsInZlbmRvcl9iYXRjaCI6MiwiaWF0IjoxNzcxMjA5ODMzLCJleHAiOjE3NzQ4Mzg2MzN9.HSucBycFdNR6Dhh0X54KCMHnwIzuRdVW1xPsMgH6Ml4
+                  milestone_id: 3
+                  status_milestone: BID Submitted
+                  status_submilestone: Vendor Approved
+                  status: Need Action
+                  status_group: need_action
+                  action: Confirm Spec
+                  items:
+                    - quantity: 15
+                      item_code: '4'
+                      item_text: CLAMP,HOSE;63024;2IN DIA;BREEZE USA
+                    - quantity: 10
+                      item_code: '3'
+                      item_text: CLAMP,HOSE;63040;3IN DIA;BREEZE USA
+                - rfq_number: RFQ0000684
+                  pr_number: '080226005'
+                  server_groups: BCG
+                  vendor_code: '100415'
+                  vendor_name: KALIMANTAN PERMAI WIJAYA, PT (Level 1)
+                  vendor_batch: 2
+                  submission_deadline: '2026-03-23T17:00:00.000Z'
+                  submission_deadline_remaining_days: 18
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 3
+                  status_dic: 1
+                  dic_token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZnFfbnVtYmVyIjoiUkZRMDAwMDY4NCIsInZlbmRvcl9iYXRjaCI6MiwiaWF0IjoxNzcwNjIzMjE1LCJleHAiOjE3NzMzMDE2MTV9.fNgBp8AdpoouetaNYEkbnFk9Nxfgl6jn70VzA2U6kSA
+                  milestone_id: 3
+                  status_milestone: BID Submitted
+                  status_submilestone: Vendor Approved
+                  status: Need Action
+                  status_group: need_action
+                  action: Confirm Spec
+                  items:
+                    - quantity: 20
+                      item_code: '2'
+                      item_text: BRAKE FLUID,AUTOMOTIVE;DOT 4
+                - rfq_number: RFQ0000684
+                  pr_number: '080226005'
+                  server_groups: BCG
+                  vendor_code: '100415'
+                  vendor_name: KALIMANTAN PERMAI WIJAYA, PT (Level 1)
+                  vendor_batch: 2
+                  submission_deadline: '2026-03-23T17:00:00.000Z'
+                  submission_deadline_remaining_days: 18
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 1
+                  status_dic: 1
+                  dic_token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZnFfbnVtYmVyIjoiUkZRMDAwMDY4NCIsInZlbmRvcl9iYXRjaCI6MiwiaWF0IjoxNzcwNjIzMjE1LCJleHAiOjE3NzMzMDE2MTV9.fNgBp8AdpoouetaNYEkbnFk9Nxfgl6jn70VzA2U6kSA
+                  milestone_id: 14
+                  status_milestone: Quotation Reviewed
+                  status_submilestone: Waiting for OE Revision
+                  status: Need Action
+                  status_group: need_action
+                  action: +OE
+                  items:
+                    - quantity: 3
+                      item_code: '1'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+                - rfq_number: RFQ0000093
+                  pr_number: '1100013278'
+                  server_groups: BCG
+                  vendor_code: '300022'
+                  vendor_name: KOPERASI KARYAWAN BINA BERSAMA, KOP (Level 2)
+                  vendor_batch: 1
+                  submission_deadline: null
+                  submission_deadline_remaining_days: null
+                  cs_name: Katharina Evie Susanti
+                  cs_email: katharinaes.ea@techconnect.co.id
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 0
+                  status_dic: 3
+                  dic_token: null
+                  milestone_id: 9
+                  status_milestone: Quotation Reviewed
+                  status_submilestone: DIC Request Revise
+                  status: Need Action
+                  status_group: need_action
+                  action: Request Revise
+                  items:
+                    - quantity: 6
+                      item_code: '1'
+                      item_text: HELMET,SAFETY;RED;V-GARD
+                - rfq_number: RFQ0000163
+                  pr_number: '1100013302'
+                  server_groups: BCG
+                  vendor_code: '300022'
+                  vendor_name: KOPERASI KARYAWAN BINA BERSAMA, KOP (Level 2)
+                  vendor_batch: 1
+                  submission_deadline: null
+                  submission_deadline_remaining_days: null
+                  cs_name: MRR TF
+                  cs_email: adik.ea@techconnect.co.id
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 0
+                  status_dic: 3
+                  dic_token: null
+                  milestone_id: 9
+                  status_milestone: Quotation Reviewed
+                  status_submilestone: DIC Request Revise
+                  status: Need Action
+                  status_group: need_action
+                  action: Request Revise
+                  items:
+                    - quantity: 144
+                      item_code: '2'
+                      item_text: FILTER ELEMENT;RACOR 2020PM
+                - rfq_number: RFQ0000627
+                  pr_number: '1100013452'
+                  server_groups: BCG
+                  vendor_code: '101839'
+                  vendor_name: MULTI TEKHNIK JAYA, CV (Level 1)
+                  vendor_batch: 2
+                  submission_deadline: '2026-01-23T11:00:54.000Z'
+                  submission_deadline_remaining_days: -41
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 1
+                  status_dic: null
+                  dic_token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZnFfbnVtYmVyIjoiUkZRMDAwMDYyNyIsInZlbmRvcl9iYXRjaCI6MiwiaWF0IjoxNzY2NDg3NjU0LCJleHAiOjE3NjkxNjYwNTR9.Fd4D-Drt3HQDM0AsdVkcGjezF6_MDZOpka3QlTdBwPQ
+                  milestone_id: 3
+                  status_milestone: BID Submitted
+                  status_submilestone: Vendor Approved
+                  status: Need Action
+                  status_group: need_action
+                  action: Confirm Spec
+                  items:
+                    - quantity: 15
+                      item_code: '1'
+                      item_text: CLAMP,HOSE;63024;2IN DIA;BREEZE USA
+                    - quantity: 10
+                      item_code: '2'
+                      item_text: CLAMP,HOSE;63040;3IN DIA;BREEZE USA
+                - rfq_number: RFQ0000628
+                  pr_number: '1100013452'
+                  server_groups: BCG
+                  vendor_code: '300022'
+                  vendor_name: KOPERASI KARYAWAN BINA BERSAMA, KOP (Level 2)
+                  vendor_batch: 2
+                  submission_deadline: '2026-01-23T08:40:30.000Z'
+                  submission_deadline_remaining_days: -41
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 1
+                  status_dic: null
+                  dic_token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZnFfbnVtYmVyIjoiUkZRMDAwMDYyOCIsInZlbmRvcl9iYXRjaCI6MiwiaWF0IjoxNzY2NDc5MjMwLCJleHAiOjE3NjkxNTc2MzB9.AUKyPNeQHOYtKE7nY3bA6HNr9ivIpifYSoJzVZg16D4
+                  milestone_id: 3
+                  status_milestone: BID Submitted
+                  status_submilestone: Vendor Approved
+                  status: Need Action
+                  status_group: need_action
+                  action: Confirm Spec
+                  items:
+                    - quantity: 20
+                      item_code: '3'
+                      item_text: BRAKE FLUID,AUTOMOTIVE;DOT 4
+                - rfq_number: RFQ0000628
+                  pr_number: '1100013452'
+                  server_groups: BCG
+                  vendor_code: '100415'
+                  vendor_name: KALIMANTAN PERMAI WIJAYA, PT (Level 1)
+                  vendor_batch: 2
+                  submission_deadline: '2026-01-23T08:40:30.000Z'
+                  submission_deadline_remaining_days: -41
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 1
+                  status_dic: null
+                  dic_token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZnFfbnVtYmVyIjoiUkZRMDAwMDYyOCIsInZlbmRvcl9iYXRjaCI6MiwiaWF0IjoxNzY2NDc5MjMwLCJleHAiOjE3NjkxNTc2MzB9.AUKyPNeQHOYtKE7nY3bA6HNr9ivIpifYSoJzVZg16D4
+                  milestone_id: 3
+                  status_milestone: BID Submitted
+                  status_submilestone: Vendor Approved
+                  status: Need Action
+                  status_group: need_action
+                  action: Confirm Spec
+                  items:
+                    - quantity: 3
+                      item_code: '4'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+                - rfq_number: RFQ0000690
+                  pr_number: '190226002'
+                  server_groups: BCG
+                  vendor_code: '100415'
+                  vendor_name: KALIMANTAN PERMAI WIJAYA, PT (Level 1)
+                  vendor_batch: 3
+                  submission_deadline: null
+                  submission_deadline_remaining_days: null
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 0
+                  status_dic: 3
+                  dic_token: null
+                  milestone_id: 9
+                  status_milestone: Quotation Reviewed
+                  status_submilestone: DIC Request Revise
+                  status: Need Action
+                  status_group: need_action
+                  action: Request Revise
+                  items:
+                    - quantity: 3
+                      item_code: '1'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+                - rfq_number: RFQ0000670
+                  pr_number: '070226001'
+                  server_groups: BCG
+                  vendor_code: '100415'
+                  vendor_name: KALIMANTAN PERMAI WIJAYA, PT (Level 1)
+                  vendor_batch: 1
+                  submission_deadline: null
+                  submission_deadline_remaining_days: null
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  pr_creator_email: agus.setiabudi@mtl.co.id
+                  pr_requestor_email: agus.setiabudi@ckb.co.id;agus.setiabudi@mtl.co.id
+                  status_vendor: 0
+                  status_dic: null
+                  dic_token: null
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 20
+                      item_code: '2'
+                      item_text: BRAKE FLUID,AUTOMOTIVE;DOT 4
+                    - quantity: 3
+                      item_code: '1'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+              pagination:
+                totalItems: 96
+                totalPages: 10
+                currentPage: 1
+                itemsPerPage: 10
+      headers: {}
+  security:
+    - bearer: []

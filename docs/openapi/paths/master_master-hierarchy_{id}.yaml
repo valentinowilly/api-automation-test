@@ -1,0 +1,24 @@
+get:
+  summary: Get master-hierarchy by ID
+  deprecated: false
+  description: Get material group item by ID
+  tags:
+    - Master Data/Material Hierarchy
+  parameters:
+    - name: id
+      in: path
+      description: ''
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+      headers: {}
+  security:
+    - bearer: []

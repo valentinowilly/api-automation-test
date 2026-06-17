@@ -1,0 +1,18 @@
+get:
+  summary: Get Category Levels
+  deprecated: false
+  description: ''
+  tags:
+    - Master Data/Categories
+  parameters: []
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+      headers: {}
+  security:
+    - bearer: []

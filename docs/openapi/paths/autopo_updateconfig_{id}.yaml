@@ -1,0 +1,47 @@
+post:
+  summary: Update configuration
+  deprecated: false
+  description: |
+    Update an existing Auto PO configuration entry by ID.
+  operationId: updateConfig
+  tags:
+    - Auto PO Configuration
+  parameters:
+    - name: id
+      in: path
+      description: Configuration ID
+      required: true
+      example: 0
+      schema:
+        type: integer
+        example: 1
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example:
+          config_value: '1500000'
+    required: true
+  responses:
+    '200':
+      description: Configuration updated successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: boolean
+      headers: {}
+    '401':
+      $ref: '../components/responses/ErrorResponses.yaml#/Unauthorized'
+    '400':
+      $ref: '../components/responses/ErrorResponses.yaml#/BadRequest'
+    '500':
+      $ref: '../components/responses/ErrorResponses.yaml#/InternalServerError'
+  security:
+    - bearer: []

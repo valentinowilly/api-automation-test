@@ -1,0 +1,43 @@
+get:
+  summary: Get all RFQs (backdoor)
+  deprecated: false
+  description: |
+    **Backdoor endpoint** - No authentication required.
+
+    Retrieve all RFQ records. Use with caution in production.
+  operationId: getAllRFQ
+  tags:
+    - Purchase Requests
+  parameters:
+    - name: status_vendor
+      in: query
+      description: ''
+      required: false
+      example: '0'
+      schema:
+        type: string
+    - name: vendor_batch
+      in: query
+      description: ''
+      required: false
+      example: '1'
+      schema:
+        type: string
+  responses:
+    '200':
+      description: All RFQs retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: array
+                items:
+                  type: object
+                  properties: {}
+      headers: {}
+  security:
+    - bearer: []

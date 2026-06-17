@@ -1,0 +1,29 @@
+post:
+  summary: Send quotation not submitted reminder
+  deprecated: false
+  description: |
+    Send reminder email to vendor for pending quotation submission.
+  operationId: sendQuotationNotSubmitted
+  tags:
+    - Email Notifications
+  parameters:
+    - name: token
+      in: path
+      description: JWT token for email-based authentication
+      required: true
+      example: ''
+      schema:
+        type: string
+        format: jwt
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  responses:
+    '200':
+      description: Reminder email sent successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+      headers: {}
+  security:
+    - bearer: []

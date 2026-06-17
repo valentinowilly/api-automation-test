@@ -1,0 +1,67 @@
+post:
+  summary: Basic Login
+  deprecated: false
+  description: Authenticate user with email/username and password. Returns a JWT access token for subsequent API requests.
+  tags:
+    - Authentication/New method
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - identifier
+            - password
+          properties:
+            identifier:
+              type: string
+              description: User email or username
+              example: procurement@sinarmasmining.com
+            password:
+              type: string
+              format: password
+              description: User password
+              example: 1Cz3DPsVmwAS7FawsKT1pFkJXZsAGbto
+    required: true
+  responses:
+    '200':
+      description: Login successful
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: JWT access token
+                required:
+                  - access_token
+            required:
+              - message
+              - data
+          example:
+            message: Login Berhasil
+            data:
+              access_token: >-
+                eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoicHJvY3VyZW1lbnRAc2luYXJtYXNtaW5pbmcuY29tIiwibGV2ZWwiOm51bGwsInJvbGUiOm51bGwsInBlcm1pc3Npb25zIjpbXSwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiIifSwiaWF0IjoxNzcwODAwMTMzLCJleHAiOjE3NzA5NzI5MzN9.6ltuupjRSllCFWCFJrBsUWWdJAQ_0jX_7Kr9uMh1YfE
+      headers: {}
+    '400':
+      $ref: '../components/responses/ErrorResponses.yaml#/BadRequest'
+    '401':
+      description: Invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "Invalid email or password"
+            data: null
+    '500':
+      $ref: '../components/responses/ErrorResponses.yaml#/InternalServerError'
+  security: []

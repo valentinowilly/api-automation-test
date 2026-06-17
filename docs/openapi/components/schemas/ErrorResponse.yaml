@@ -1,0 +1,23 @@
+type: object
+required:
+  - message
+  - data
+properties:
+  message:
+    oneOf:
+      - type: string
+        description: Single error message
+        example: "User not found"
+      - type: array
+        description: Array of validation error messages (from Joi validation)
+        items:
+          type: string
+        example:
+          - "\"email\" must be a valid email"
+          - "\"name\" length must be at least 3 characters long"
+    description: Error message - can be a single string for general errors or an array of strings for validation errors
+  data:
+    type: object
+    nullable: true
+    description: Always null for error responses
+    example: null

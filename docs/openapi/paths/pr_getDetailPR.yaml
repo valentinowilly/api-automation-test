@@ -1,0 +1,37 @@
+post:
+  summary: Get PR detail
+  deprecated: false
+  description: |
+    Retrieve detailed information for a specific purchase request.
+  operationId: getPRDetail
+  tags:
+    - Purchase Requests
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - pr_number
+          properties:
+            pr_number:
+              type: string
+              example: PR20240001
+    required: true
+  responses:
+    '200':
+      description: PR details retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties: {}
+      headers: {}
+  security:
+    - bearer: []

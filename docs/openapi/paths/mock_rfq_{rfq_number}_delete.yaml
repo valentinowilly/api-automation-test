@@ -1,0 +1,66 @@
+delete:
+  tags:
+    - Mock
+  summary: Delete mock RFQ by RFQ number
+  description: >
+    Deletes a specific mock RFQ and all associated data by its RFQ number. This endpoint is used to clean up test data after testing scenarios.
+    
+    **Note**: This endpoint should only be used in development/testing environments. Use with caution as it permanently deletes data.
+  operationId: deleteMockRfq
+  security:
+    - bearer: []
+  parameters:
+    - name: rfq_number
+      in: path
+      required: true
+      description: RFQ number to delete (e.g., RFQ0000042)
+      schema:
+        type: string
+        pattern: '^RFQ[0-9]{7}$'
+      example: "RFQ0000042"
+  responses:
+    '200':
+      description: Mock RFQ deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/StandardResponse.yaml'
+          example:
+            message: "Mock RFQ deleted successfully"
+            data:
+              rfq_number: "RFQ0000042"
+              deleted_items: 5
+              deleted_vendors: 3
+    '400':
+      description: Invalid RFQ number format
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "Invalid RFQ number format"
+            data: null
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+    '404':
+      description: RFQ not found
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "RFQ not found"
+            data: null
+    '500':
+      description: Internal server error during deletion
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "Failed to delete mock RFQ"
+            data: null

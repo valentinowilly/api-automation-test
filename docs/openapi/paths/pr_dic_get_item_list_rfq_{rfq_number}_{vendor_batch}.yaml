@@ -1,0 +1,145 @@
+get:
+  summary: Get RFQ items for DIC Without Token
+  deprecated: false
+  description: |
+    Retrieve RFQ items for DIC confirmation via email token.
+
+    Returns items with vendor quotation data for DIC review.
+  operationId: getDICRFQItemsWithoutToken
+  tags:
+    - DIC Operations
+  parameters:
+    - name: rfq_number
+      in: path
+      description: ''
+      required: true
+      schema:
+        type: string
+    - name: vendor_batch
+      in: path
+      description: ''
+      required: true
+      schema:
+        type: string
+    - name: milestone_id
+      in: query
+      description: ''
+      required: false
+      example: '14'
+      schema:
+        type: string
+  responses:
+    '200':
+      description: RFQ items retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  header:
+                    type: object
+                    properties: {}
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties: {}
+          example:
+            message: Data all RFQ DIC Items
+            data:
+              to:
+                name: PT. Mutiara Tanjung Lestari
+                address: >-
+                  - Jl. Pemuda No.40, Tanjung Redeb,77311,Berau, Kalimantan
+                  Timur,Indonesia
+              pr_number: '1100013452'
+              rfq_number: RFQ0000628
+              vendor_batch: 2
+              items:
+                - item_code: '4'
+                  rfq_number: RFQ0000628
+                  name: RELAY,THERMAL;24V;5 PIN
+                  location: PT. Mutiara Tanjung Lestari
+                  request_quantity: 3
+                  request_price: '85000.00'
+                  request_brand: Bosch
+                  request_warranty: 3
+                  request_unit_item: PC
+                  request_sloc: null
+                  request_delivery_date: '2025-01-13T17:00:00.000Z'
+                  data:
+                    deliveryDate: 14 Jan 2025
+                  vendors:
+                    - id: 1885
+                      vendor_code: '100415'
+                      deliveryDate: 15 Feb 2024
+                      description: Premium quality office supplies
+                      price: '150000.00'
+                      offer_vendor_brand: Dell
+                      offer_vendor_warranty: 12
+                      offer_vendor_sloc: Berau HO
+                      offer_vendor_address_details: Jkt
+                      offer_vendor_specification: 8GB RAM
+                      offer_vendor_sloc_name: Berau HO
+                      images: []
+                      status: WAITING
+                      rejectionReason: ''
+                      vendorName: KALIMANTAN PERMAI WIJAYA, PT
+                      vendorCity: BALIKPAPAN
+                      deviations:
+                        quantity:
+                          request: 3 PC
+                          offer: 3 PC
+                          value: 0
+                          has_deviation: false
+                        price:
+                          request: 85000
+                          offer: 150000
+                          value: 65000
+                          formatted: Rp65.000
+                          has_deviation: true
+                        subtotal:
+                          request: 255000
+                          offer: 450000
+                          value: 195000
+                          formatted: Rp195.000
+                          has_deviation: true
+                        delivery_date:
+                          request: '2025-01-13T17:00:00.000Z'
+                          request_formatted: 14 Jan 2025
+                          offer: '2024-02-15T00:00:00.000Z'
+                          offer_formatted: 15 Feb 2024
+                          days_diff: -334
+                          formatted: '-334 days'
+                          has_deviation: true
+                        brand:
+                          request: Bosch
+                          offer: Dell
+                          status: berbeda dengan PR
+                          has_deviation: Bosch
+                        warranty:
+                          request: 3
+                          offer: 12
+                          request_formatted: 3 bulan
+                          offer_formatted: 12 bulan
+                          value: 9
+                          formatted: +9 bulan
+                          has_deviation: true
+                        delivery_address:
+                          request: '-'
+                          offer: Berau HO
+                          vendor_sloc_codes: Berau HO
+                          status: SLOC berbeda dengan PR
+                          has_deviation: true
+                        address_details:
+                          request: '-'
+                          offer: Jkt
+                          has_deviation: true
+      headers: {}
+  security:
+    - bearer: []

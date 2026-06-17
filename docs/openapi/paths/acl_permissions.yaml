@@ -1,0 +1,113 @@
+post:
+  summary: Create Permission
+  deprecated: false
+  description: ''
+  tags:
+    - Access Control List (ACL)/Permissions
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example:
+          name: testing
+          module: user
+          action: testing
+          is_active: true
+    required: true
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+      headers: {}
+  security:
+    - bearer: []
+get:
+  summary: Get Permission Pagination
+  deprecated: false
+  description: ''
+  tags:
+    - Access Control List (ACL)/Permissions
+  parameters:
+    - name: page
+      in: query
+      description: ''
+      required: false
+      example: '1'
+      schema:
+        type: string
+    - name: limit
+      in: query
+      description: ''
+      required: false
+      example: '10'
+      schema:
+        type: string
+    - name: search
+      in: query
+      description: ''
+      required: false
+      schema:
+        type: string
+    - name: sort_by
+      in: query
+      description: ''
+      required: false
+      example: updated_at
+      schema:
+        type: string
+        enum:
+          - id
+          - name
+          - slug
+          - updated_at
+        default: updated_at
+    - name: order
+      in: query
+      description: ''
+      required: false
+      example: desc
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: desc
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/Permission.yaml
+                  pagination:
+                    $ref: ../components/schemas/PaginationMeta.yaml
+                required:
+                  - data
+                  - pagination
+            required:
+              - message
+              - data
+      headers: {}
+  security:
+    - bearer: []

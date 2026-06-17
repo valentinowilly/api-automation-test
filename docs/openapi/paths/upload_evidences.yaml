@@ -1,0 +1,71 @@
+post:
+  summary: Upload multiple evidence files
+  deprecated: false
+  description: |
+    Upload up to 5 evidence files for an RFQ item.
+
+    **Constraints**:
+    - Max files: 5
+    - Max size per file: 10MB
+  operationId: uploadMultipleEvidences
+  tags:
+    - Upload Management
+  parameters: []
+  requestBody:
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            images:
+              type: array
+              items:
+                type: string
+                format: binary
+              maxItems: 5
+              example: ''
+            rfqItemId:
+              type: integer
+              example: 0
+          required:
+            - images
+            - rfqItemId
+    required: true
+  responses:
+    '200':
+      description: Evidence files uploaded successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+      headers: {}
+  security:
+    - bearer: []
+delete:
+  summary: Delete multiple evidence files
+  deprecated: false
+  description: |
+    Delete multiple evidence files by their URLs.
+  operationId: deleteMultipleEvidences
+  tags:
+    - Upload Management
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+    required: true
+  responses:
+    '200':
+      description: Evidence files deleted successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+      headers: {}
+  security:
+    - bearer: []

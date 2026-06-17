@@ -1,0 +1,460 @@
+get:
+  summary: Get OE revision items by Token
+  deprecated: false
+  description: |
+    Retrieve RFQ items pending OE revision.
+  operationId: getOERevisionByToken
+  tags:
+    - CS Operations
+  parameters:
+    - name: token
+      in: path
+      description: ''
+      required: true
+      example: >-
+        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZnFfbnVtYmVyIjoiUkZRMDAwMDY4OSIsInZlbmRvcl9iYXRjaCI6MiwidmVuZG9yX2NvZGUiOiIxMDE4MzkiLCJpYXQiOjE3Njk0OTEzNzEsImV4cCI6MTc2OTc1MDU3MX0.eBFeFi7pkmTbTpeoPVXdyeqcIAROgCEH6ejYjzxG-Xs
+      schema:
+        type: string
+  responses:
+    '200':
+      description: OE revision items retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  header:
+                    type: object
+                    properties:
+                      rfq_number:
+                        type: string
+                      pr_number:
+                        type: string
+                      purchasing_group:
+                        type: string
+                      pr_creator_name:
+                        type: string
+                      pr_creator_email:
+                        type: string
+                      pr_release_date:
+                        type: string
+                      sla_days:
+                        type: integer
+                      vendor_code:
+                        type: string
+                      vendor_name:
+                        type: string
+                      milestone:
+                        type: string
+                      sub_milestone:
+                        type: string
+                      quotation_number:
+                        type: string
+                      quotation_date:
+                        type: string
+                        nullable: true
+                      document:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            filePath:
+                              type: string
+                            is_latest:
+                              type: boolean
+                            batch:
+                              type: integer
+                            rfqNumber:
+                              type: string
+                            vendorCode:
+                              type: string
+                            createdAt:
+                              type: string
+                            updatedAt:
+                              type: string
+                    required:
+                      - rfq_number
+                      - pr_number
+                      - purchasing_group
+                      - pr_creator_name
+                      - pr_creator_email
+                      - pr_release_date
+                      - sla_days
+                      - vendor_code
+                      - vendor_name
+                      - milestone
+                      - sub_milestone
+                      - quotation_number
+                      - quotation_date
+                      - document
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        request_quantity:
+                          type: integer
+                        request_price:
+                          type: string
+                        request_delivery_date:
+                          type: string
+                        location:
+                          type: string
+                        rfq_number:
+                          type: string
+                        item_code:
+                          type: string
+                        vendor_code:
+                          type: string
+                        offer_vendor_delivery_date:
+                          type: string
+                          nullable: true
+                        offer_vendor_price:
+                          type: number
+                          nullable: true
+                        vendor_description:
+                          type: string
+                          nullable: true
+                        reject_reason:
+                          type: string
+                          nullable: true
+                        vendor_reject_reason:
+                          type: string
+                        status_dic:
+                          type: integer
+                        status_milestone:
+                          type: integer
+                        offer_vendor_specification:
+                          type: string
+                          nullable: true
+                        offer_vendor_brand:
+                          type: string
+                          nullable: true
+                        offer_vendor_warranty:
+                          type: string
+                          nullable: true
+                        offer_vendor_sloc:
+                          type: string
+                          nullable: true
+                        offer_vendor_address_details:
+                          type: string
+                          nullable: true
+                        uom:
+                          type: string
+                        plant_code:
+                          type: string
+                        server_groups:
+                          type: string
+                        request_brand:
+                          type: string
+                        request_warranty:
+                          type: integer
+                        request_unit_item:
+                          type: string
+                        request_sloc:
+                          type: string
+                          nullable: true
+                        plant_name:
+                          type: string
+                        specification_images:
+                          type: string
+                          nullable: true
+                        dic_reject_reason_images:
+                          type: string
+                          nullable: true
+                        offer_vendor_sloc_name:
+                          type: string
+                          nullable: true
+                        deviations:
+                          type: object
+                          properties:
+                            quantity:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                offer:
+                                  type: string
+                                value:
+                                  type: integer
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - value
+                                - has_deviation
+                            price:
+                              type: object
+                              properties:
+                                request:
+                                  type: integer
+                                offer:
+                                  type: integer
+                                value:
+                                  type: integer
+                                formatted:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - value
+                                - formatted
+                                - has_deviation
+                            subtotal:
+                              type: object
+                              properties:
+                                request:
+                                  type: integer
+                                offer:
+                                  type: integer
+                                value:
+                                  type: integer
+                                formatted:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - value
+                                - formatted
+                                - has_deviation
+                            delivery_date:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                request_formatted:
+                                  type: string
+                                offer:
+                                  type: string
+                                offer_formatted:
+                                  type: string
+                                days_diff:
+                                  type: integer
+                                formatted:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - request_formatted
+                                - offer
+                                - offer_formatted
+                                - days_diff
+                                - formatted
+                                - has_deviation
+                            brand:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                offer:
+                                  type: string
+                                status:
+                                  type: string
+                                has_deviation:
+                                  type: string
+                              required:
+                                - request
+                                - offer
+                                - status
+                                - has_deviation
+                            warranty:
+                              type: object
+                              properties:
+                                request:
+                                  type: integer
+                                offer:
+                                  type: integer
+                                request_formatted:
+                                  type: string
+                                offer_formatted:
+                                  type: string
+                                value:
+                                  type: integer
+                                formatted:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - request_formatted
+                                - offer_formatted
+                                - value
+                                - formatted
+                                - has_deviation
+                            delivery_address:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                offer:
+                                  type: string
+                                vendor_sloc_codes:
+                                  type: string
+                                status:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - vendor_sloc_codes
+                                - status
+                                - has_deviation
+                            address_details:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                offer:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - has_deviation
+                          required:
+                            - quantity
+                            - price
+                            - subtotal
+                            - delivery_date
+                            - brand
+                            - warranty
+                            - delivery_address
+                            - address_details
+                required:
+                  - header
+                  - items
+            required:
+              - message
+              - data
+          example:
+            message: Successfully retrieved OE revision RFQ items.
+            data:
+              header:
+                rfq_number: RFQ0000624
+                pr_number: '1200027427'
+                purchasing_group: IT Inf & Proj Dev
+                pr_creator_name: IT Dept
+                pr_creator_email: admin.itmis@beraucoal.co.id
+                pr_release_date: 23 Dec 2025
+                sla_days: 34
+                vendor_code: '101962'
+                vendor_name: INDO JAYA TEHNIK, CV
+                milestone: Quotation Reviewed
+                sub_milestone: OE Revised
+                quotation_number: No Quot
+                quotation_date: null
+                document:
+                  - id: 1898
+                    filePath: >-
+                      https://aigen-api.icosystem.id/uploads/documents/document-1766473558035-993352140.png
+                    is_latest: true
+                    batch: 1
+                    rfqNumber: RFQ0000624
+                    vendorCode: '101962'
+                    createdAt: '2025-12-23T07:05:58.000Z'
+                    updatedAt: '2025-12-23T07:05:58.000Z'
+              items:
+                - id: 1877
+                  name: CABLE ASSY,SP,ELECT;STP CAT 6
+                  request_quantity: 2
+                  request_price: '6455000.00'
+                  request_delivery_date: '2025-12-25T17:00:00.000Z'
+                  location: Berau Head Office
+                  rfq_number: RFQ0000624
+                  item_code: '10'
+                  vendor_code: '101962'
+                  offer_vendor_delivery_date: null
+                  offer_vendor_price: null
+                  vendor_description: null
+                  reject_reason: null
+                  vendor_reject_reason: Sudah di sourcing sama tim Aigen
+                  status_dic: 1
+                  status_milestone: 15
+                  offer_vendor_specification: null
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_sloc: null
+                  offer_vendor_address_details: null
+                  uom: BOX
+                  plant_code: B200
+                  server_groups: BCG
+                  request_brand: 'NO'
+                  request_warranty: 0
+                  request_unit_item: BOX
+                  request_sloc: null
+                  plant_name: Berau Head Office
+                  specification_images: null
+                  dic_reject_reason_images: null
+                  offer_vendor_sloc_name: null
+                  deviations:
+                    quantity:
+                      request: 2 BOX
+                      offer: 2 BOX
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 6455000
+                      offer: 6455000
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    subtotal:
+                      request: 12910000
+                      offer: 12910000
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_date:
+                      request: '2025-12-25T17:00:00.000Z'
+                      request_formatted: 26 Dec 2025
+                      offer: '2025-12-25T17:00:00.000Z'
+                      offer_formatted: 26 Dec 2025
+                      days_diff: 0
+                      formatted: 0 days
+                      has_deviation: false
+                    brand:
+                      request: 'NO'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: 'NO'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      vendor_sloc_codes: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+      headers: {}
+  security:
+    - bearer: []

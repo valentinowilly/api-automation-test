@@ -1,0 +1,59 @@
+put:
+  summary: DIC confirm quotation
+  deprecated: false
+  description: |
+    Department Internal Control confirms or declines vendor quotations.
+
+    **Status Options**:
+    - 1: Accepted - Quotation approved
+    - 2: Declined - Quotation rejected
+    - 3: Request Revision - Request vendor to revise quotation
+
+    After confirmation, workflow proceeds to CS review or vendor revision.
+  operationId: dicConfirmQuotation
+  tags:
+    - DIC Operations
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example: |-
+          {
+              "items": [
+                  // {
+                  //     "id": 123,
+                  //     "status_dic": 1
+                  // },
+                  {
+                      "id": 1909,
+                      "status_dic": 3,
+                      "reject_reason": "Technical specs: X, Y, Z"
+                  }
+              ]
+          }
+  responses:
+    '200':
+      description: Quotation confirmed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  updated:
+                    type: integer
+                    description: Number of items updated
+                  rfq_number:
+                    type: string
+                  vendor_batch:
+                    type: integer
+      headers: {}
+  security:
+    - bearer: []

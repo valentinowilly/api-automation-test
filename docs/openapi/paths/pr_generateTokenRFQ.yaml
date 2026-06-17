@@ -1,0 +1,73 @@
+post:
+  summary: Generare Token RFQ (Backdoor For Development Only)
+  deprecated: false
+  description: ''
+  tags:
+    - Endpoint generate data for testing
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example: |-
+          {
+              // "qcf_number": "QCF0000004", // type management
+              "rfq_number": "RFQ0000624", // type dic, vendor
+              "type": "vendor", // dic | vendor | management
+              "vendor_code": "300022", // type dic, vendor
+              "vendor_batch": 5, // type dic, vendor
+              "expiresIn": "7d",
+          }
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  dateExpired:
+                    type: string
+                  payload:
+                    type: object
+                    properties:
+                      rfq_number:
+                        type: string
+                      vendor_batch:
+                        type: integer
+                    required:
+                      - rfq_number
+                      - vendor_batch
+                  url:
+                    type: string
+                  usage:
+                    type: object
+                    properties:
+                      header:
+                        type: string
+                      urlAccess:
+                        type: string
+                    required:
+                      - header
+                      - urlAccess
+                required:
+                  - token
+                  - dateExpired
+                  - payload
+                  - url
+                  - usage
+            required:
+              - message
+              - data
+      headers: {}
+  security:
+    - bearer: []

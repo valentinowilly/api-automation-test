@@ -1,0 +1,726 @@
+get:
+  summary: Get QCF needing CL approval by Token
+  deprecated: false
+  description: |
+    Retrieve QCF details with cost saving calculations for CL approval.
+  operationId: getNeedApprovalQCFByToken
+  tags:
+    - CL Operations
+  parameters:
+    - name: token
+      in: path
+      description: ''
+      required: true
+      example: >-
+        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJxY2ZfbnVtYmVyIjoiUUNGMDAwMDI3NSIsInZlbmRvcl9jb2RlIjoiMTAxODM5IiwiaWF0IjoxNzY5NTAxODY5LCJleHAiOjE3Njk3NjEwNjl9.lfqYpBAkq0_32eir4-HDSSpBKxD7Bke393QslUU70PM
+      schema:
+        type: string
+  responses:
+    '200':
+      description: QCF details retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  qcfNumber:
+                    type: string
+                  prNumber:
+                    type: string
+                  rfq_number:
+                    type: string
+                  vendor_batch:
+                    type: integer
+                  awardedVendor:
+                    type: string
+                  awardedPrice:
+                    type: integer
+                  ownerEstimate:
+                    type: integer
+                  sourcingType:
+                    type: string
+                  quotationNumber:
+                    type: string
+                  quotationDate:
+                    type: string
+                  documentLink:
+                    type: string
+                  qcfApproved:
+                    type: boolean
+                  comment:
+                    type: string
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        item_code:
+                          type: string
+                        name:
+                          type: string
+                        location:
+                          type: string
+                        delivery_date:
+                          type: string
+                        vendor_delivery_date:
+                          type: string
+                        vendor_code:
+                          type: string
+                        qcf_number:
+                          type: string
+                        rfq_number:
+                          type: string
+                        pr_number:
+                          type: string
+                        vendor_description:
+                          type: string
+                        quotation_number:
+                          type: string
+                        quotation_date:
+                          type: string
+                        vendor_price:
+                          type: string
+                        oe_price:
+                          type: string
+                        quantity:
+                          type: integer
+                        uom:
+                          type: string
+                        rfq_item_id:
+                          type: integer
+                        qcf_approved:
+                          type: boolean
+                        cl_comment:
+                          type: string
+                        tipe_rfq:
+                          type: string
+                          nullable: true
+                        quantity_deviation:
+                          type: integer
+                        price_deviation:
+                          type: integer
+                        subtotal_deviation:
+                          type: integer
+                        delivery_date_deviation:
+                          type: string
+                        images:
+                          type: array
+                          items:
+                            type: string
+                        evidence:
+                          type: array
+                          items:
+                            type: string
+                  costSaving:
+                    type: object
+                    properties:
+                      baselineSpend:
+                        type: integer
+                      actualSpend:
+                        type: integer
+                      actualSaving:
+                        type: integer
+                      savingPercentage:
+                        type: integer
+                    required:
+                      - baselineSpend
+                      - actualSpend
+                      - actualSaving
+                      - savingPercentage
+                required:
+                  - qcfNumber
+                  - prNumber
+                  - rfq_number
+                  - vendor_batch
+                  - awardedVendor
+                  - awardedPrice
+                  - ownerEstimate
+                  - sourcingType
+                  - quotationNumber
+                  - quotationDate
+                  - documentLink
+                  - qcfApproved
+                  - comment
+                  - items
+                  - costSaving
+            required:
+              - message
+              - data
+          example:
+            message: Successfully retrieved approved RFQ items.
+            data:
+              qcfNumber: QCF0000019
+              prNumber: '1100013252'
+              rfq_number: RFQ0000111
+              vendor_batch: 2
+              awardedVendor: INDO JAYA TEHNIK, CV
+              awardedPrice: 6190000
+              ownerEstimate: 5660680
+              sourcingType: Auto by AiGen
+              quotationNumber: 25-10-1411
+              quotationDate: 11 Oct 2025
+              documentLink: >-
+                https://aigen-api.icosystem.id/uploads/documents/document-1760158131497-537897737.pdf
+              qcfApproved: 1
+              comment: Approved.
+              items:
+                - id: 25
+                  item_code: '1'
+                  name: COUPLER;1IN;HDPE
+                  location: PT. Mutiara Tanjung Lestari
+                  request_quantity: 15
+                  request_price: '51000.00'
+                  request_delivery_date: '2025-09-29T17:00:00.000Z'
+                  offer_vendor_delivery_date: '2025-10-11T00:00:00.000Z'
+                  offer_vendor_price: '56000.00'
+                  vendor_description: |
+                    COUPLER HDPE 1" (STOK PREPARE 2-3 HARI, SATUAN PCS)
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_delivery_address: null
+                  offer_vendor_address_details: null
+                  offer_vendor_specification: null
+                  uom: PC
+                  rfq_number: RFQ0000111
+                  pr_number: '1100013252'
+                  qcf_number: QCF0000019
+                  vendor_code: '101962'
+                  quotation_number: 25-10-1411
+                  quotation_date: '2025-10-11T04:48:51.000Z'
+                  rfq_item_id: 145
+                  qcf_approved: 1
+                  cl_comment: Approved.
+                  tipe_rfq: null
+                  request_brand: '-'
+                  request_warranty: 0
+                  request_unit_item: PC
+                  request_sloc: null
+                  plant_name: PT. Mutiara Tanjung Lestari
+                  vendor_name: INDO JAYA TEHNIK, CV
+                  vendor_city: BERAU
+                  images:
+                    - filePath: >-
+                        https://aigen-api.icosystem.id/uploads/images/images-1760147493162-875875933.png
+                  evidence: []
+                  deviations:
+                    quantity:
+                      request: 15 PC
+                      offer: 15 PC
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 51000
+                      offer: 56000
+                      value: 5000
+                      formatted: Rp5.000
+                      has_deviation: true
+                    subtotal:
+                      request: 765000
+                      offer: 840000
+                      value: 75000
+                      formatted: Rp75.000
+                      has_deviation: true
+                    delivery_date:
+                      request: '2025-09-29T17:00:00.000Z'
+                      request_formatted: 30 Sep 2025
+                      offer: '2025-10-11T00:00:00.000Z'
+                      offer_formatted: 11 Oct 2025
+                      days_diff: 11
+                      formatted: 11 days
+                      has_deviation: true
+                    brand:
+                      request: '-'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: '-'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+                  quantity_deviation: 0
+                  price_deviation: 5000
+                  subtotal_deviation: 75000
+                  delivery_date_deviation: 11 days
+                - id: 26
+                  item_code: '2'
+                  name: ADAPTER,STR;MALE THD;1IN;HDPE
+                  location: PT. Mutiara Tanjung Lestari
+                  request_quantity: 15
+                  request_price: '29176.00'
+                  request_delivery_date: '2025-09-29T17:00:00.000Z'
+                  offer_vendor_delivery_date: '2025-10-11T00:00:00.000Z'
+                  offer_vendor_price: '32000.00'
+                  vendor_description: >
+                    ADAPTER STR MALE THD HDPE 1" (STOK PREPARE 2-3 HARI, SATUAN
+                    PCS)
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_delivery_address: null
+                  offer_vendor_address_details: null
+                  offer_vendor_specification: null
+                  uom: PC
+                  rfq_number: RFQ0000111
+                  pr_number: '1100013252'
+                  qcf_number: QCF0000019
+                  vendor_code: '101962'
+                  quotation_number: 25-10-1411
+                  quotation_date: '2025-10-11T04:48:51.000Z'
+                  rfq_item_id: 144
+                  qcf_approved: 1
+                  cl_comment: Approved.
+                  tipe_rfq: null
+                  request_brand: '-'
+                  request_warranty: 0
+                  request_unit_item: PC
+                  request_sloc: null
+                  plant_name: PT. Mutiara Tanjung Lestari
+                  vendor_name: INDO JAYA TEHNIK, CV
+                  vendor_city: BERAU
+                  images:
+                    - filePath: >-
+                        https://aigen-api.icosystem.id/uploads/images/images-1760147503751-457961654.png
+                  evidence: []
+                  deviations:
+                    quantity:
+                      request: 15 PC
+                      offer: 15 PC
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 29176
+                      offer: 32000
+                      value: 2824
+                      formatted: Rp2.824
+                      has_deviation: true
+                    subtotal:
+                      request: 437640
+                      offer: 480000
+                      value: 42360
+                      formatted: Rp42.360
+                      has_deviation: true
+                    delivery_date:
+                      request: '2025-09-29T17:00:00.000Z'
+                      request_formatted: 30 Sep 2025
+                      offer: '2025-10-11T00:00:00.000Z'
+                      offer_formatted: 11 Oct 2025
+                      days_diff: 11
+                      formatted: 11 days
+                      has_deviation: true
+                    brand:
+                      request: '-'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: '-'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+                  quantity_deviation: 0
+                  price_deviation: 2824
+                  subtotal_deviation: 42360
+                  delivery_date_deviation: 11 days
+                - id: 27
+                  item_code: '3'
+                  name: ADAPTER,STR;FEMALE THD;1IN;HDPE
+                  location: PT. Mutiara Tanjung Lestari
+                  request_quantity: 15
+                  request_price: '30000.00'
+                  request_delivery_date: '2025-09-29T17:00:00.000Z'
+                  offer_vendor_delivery_date: '2025-10-11T00:00:00.000Z'
+                  offer_vendor_price: '33000.00'
+                  vendor_description: >
+                    ADAPTER STR FEMALE THD HDPE 1" (STOK PREPARE 2-3 HARI,
+                    SATUAN PCS)
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_delivery_address: null
+                  offer_vendor_address_details: null
+                  offer_vendor_specification: null
+                  uom: PC
+                  rfq_number: RFQ0000111
+                  pr_number: '1100013252'
+                  qcf_number: QCF0000019
+                  vendor_code: '101962'
+                  quotation_number: 25-10-1411
+                  quotation_date: '2025-10-11T04:48:51.000Z'
+                  rfq_item_id: 143
+                  qcf_approved: 1
+                  cl_comment: Approved.
+                  tipe_rfq: null
+                  request_brand: '-'
+                  request_warranty: 0
+                  request_unit_item: PC
+                  request_sloc: null
+                  plant_name: PT. Mutiara Tanjung Lestari
+                  vendor_name: INDO JAYA TEHNIK, CV
+                  vendor_city: BERAU
+                  images:
+                    - filePath: >-
+                        https://aigen-api.icosystem.id/uploads/images/images-1760156578997-671054938.png
+                  evidence: []
+                  deviations:
+                    quantity:
+                      request: 15 PC
+                      offer: 15 PC
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 30000
+                      offer: 33000
+                      value: 3000
+                      formatted: Rp3.000
+                      has_deviation: true
+                    subtotal:
+                      request: 450000
+                      offer: 495000
+                      value: 45000
+                      formatted: Rp45.000
+                      has_deviation: true
+                    delivery_date:
+                      request: '2025-09-29T17:00:00.000Z'
+                      request_formatted: 30 Sep 2025
+                      offer: '2025-10-11T00:00:00.000Z'
+                      offer_formatted: 11 Oct 2025
+                      days_diff: 11
+                      formatted: 11 days
+                      has_deviation: true
+                    brand:
+                      request: '-'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: '-'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+                  quantity_deviation: 0
+                  price_deviation: 3000
+                  subtotal_deviation: 45000
+                  delivery_date_deviation: 11 days
+                - id: 28
+                  item_code: '4'
+                  name: FITTING;ELBOW;1IN;HDPE
+                  location: PT. Mutiara Tanjung Lestari
+                  request_quantity: 15
+                  request_price: '50000.00'
+                  request_delivery_date: '2025-09-29T17:00:00.000Z'
+                  offer_vendor_delivery_date: '2025-10-11T00:00:00.000Z'
+                  offer_vendor_price: '55000.00'
+                  vendor_description: |
+                    FITTING ELBOW 1" HDPE (STOK PREPARE 2-3 HARI, SATUAN PCS)
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_delivery_address: null
+                  offer_vendor_address_details: null
+                  offer_vendor_specification: null
+                  uom: PC
+                  rfq_number: RFQ0000111
+                  pr_number: '1100013252'
+                  qcf_number: QCF0000019
+                  vendor_code: '101962'
+                  quotation_number: 25-10-1411
+                  quotation_date: '2025-10-11T04:48:51.000Z'
+                  rfq_item_id: 142
+                  qcf_approved: 1
+                  cl_comment: Approved.
+                  tipe_rfq: null
+                  request_brand: '-'
+                  request_warranty: 0
+                  request_unit_item: PC
+                  request_sloc: null
+                  plant_name: PT. Mutiara Tanjung Lestari
+                  vendor_name: INDO JAYA TEHNIK, CV
+                  vendor_city: BERAU
+                  images:
+                    - filePath: >-
+                        https://aigen-api.icosystem.id/uploads/images/images-1760156585178-460576777.png
+                  evidence: []
+                  deviations:
+                    quantity:
+                      request: 15 PC
+                      offer: 15 PC
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 50000
+                      offer: 55000
+                      value: 5000
+                      formatted: Rp5.000
+                      has_deviation: true
+                    subtotal:
+                      request: 750000
+                      offer: 825000
+                      value: 75000
+                      formatted: Rp75.000
+                      has_deviation: true
+                    delivery_date:
+                      request: '2025-09-29T17:00:00.000Z'
+                      request_formatted: 30 Sep 2025
+                      offer: '2025-10-11T00:00:00.000Z'
+                      offer_formatted: 11 Oct 2025
+                      days_diff: 11
+                      formatted: 11 days
+                      has_deviation: true
+                    brand:
+                      request: '-'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: '-'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+                  quantity_deviation: 0
+                  price_deviation: 5000
+                  subtotal_deviation: 75000
+                  delivery_date_deviation: 11 days
+                - id: 29
+                  item_code: '5'
+                  name: PIPE,PLASTIC;ROLL;HDPE;1IN ID
+                  location: PT. Mutiara Tanjung Lestari
+                  request_quantity: 100
+                  request_price: '28000.00'
+                  request_delivery_date: '2025-09-29T17:00:00.000Z'
+                  offer_vendor_delivery_date: '2025-10-11T00:00:00.000Z'
+                  offer_vendor_price: '30500.00'
+                  vendor_description: |
+                    PIPA HDPE 1" (STOK PREPARE 2-3 HARI, SATUAN MTR)
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_delivery_address: null
+                  offer_vendor_address_details: null
+                  offer_vendor_specification: null
+                  uom: M
+                  rfq_number: RFQ0000111
+                  pr_number: '1100013252'
+                  qcf_number: QCF0000019
+                  vendor_code: '101962'
+                  quotation_number: 25-10-1411
+                  quotation_date: '2025-10-11T04:48:51.000Z'
+                  rfq_item_id: 141
+                  qcf_approved: 1
+                  cl_comment: Approved.
+                  tipe_rfq: null
+                  request_brand: '-'
+                  request_warranty: 0
+                  request_unit_item: M
+                  request_sloc: null
+                  plant_name: PT. Mutiara Tanjung Lestari
+                  vendor_name: INDO JAYA TEHNIK, CV
+                  vendor_city: BERAU
+                  images:
+                    - filePath: >-
+                        https://aigen-api.icosystem.id/uploads/images/images-1760147528478-260745387.png
+                    - filePath: >-
+                        https://aigen-api.icosystem.id/uploads/images/images-1760157962250-866964955.png
+                  evidence: []
+                  deviations:
+                    quantity:
+                      request: 100 M
+                      offer: 100 M
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 28000
+                      offer: 30500
+                      value: 2500
+                      formatted: Rp2.500
+                      has_deviation: true
+                    subtotal:
+                      request: 2800000
+                      offer: 3050000
+                      value: 250000
+                      formatted: Rp250.000
+                      has_deviation: true
+                    delivery_date:
+                      request: '2025-09-29T17:00:00.000Z'
+                      request_formatted: 30 Sep 2025
+                      offer: '2025-10-11T00:00:00.000Z'
+                      offer_formatted: 11 Oct 2025
+                      days_diff: 11
+                      formatted: 11 days
+                      has_deviation: true
+                    brand:
+                      request: '-'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: '-'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+                  quantity_deviation: 0
+                  price_deviation: 2500
+                  subtotal_deviation: 250000
+                  delivery_date_deviation: 11 days
+                - id: 30
+                  item_code: '7'
+                  name: REDUCER TEE;HDPE;1 X 1/2IN
+                  location: PT. Mutiara Tanjung Lestari
+                  request_quantity: 10
+                  request_price: '45804.00'
+                  request_delivery_date: '2025-09-29T17:00:00.000Z'
+                  offer_vendor_delivery_date: '2025-10-11T00:00:00.000Z'
+                  offer_vendor_price: '50000.00'
+                  vendor_description: >
+                    TEE REDUCER HDPE 1 "X 1/2" (STOK PREPARE 2-3 HARI, SATUAN
+                    PCS)
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_delivery_address: null
+                  offer_vendor_address_details: null
+                  offer_vendor_specification: null
+                  uom: PC
+                  rfq_number: RFQ0000111
+                  pr_number: '1100013252'
+                  qcf_number: QCF0000019
+                  vendor_code: '101962'
+                  quotation_number: 25-10-1411
+                  quotation_date: '2025-10-11T04:48:51.000Z'
+                  rfq_item_id: 139
+                  qcf_approved: 1
+                  cl_comment: Approved.
+                  tipe_rfq: null
+                  request_brand: '-'
+                  request_warranty: 0
+                  request_unit_item: PC
+                  request_sloc: null
+                  plant_name: PT. Mutiara Tanjung Lestari
+                  vendor_name: INDO JAYA TEHNIK, CV
+                  vendor_city: BERAU
+                  images:
+                    - filePath: >-
+                        https://aigen-api.icosystem.id/uploads/images/images-1760147552544-497183959.png
+                  evidence: []
+                  deviations:
+                    quantity:
+                      request: 10 PC
+                      offer: 10 PC
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 45804
+                      offer: 50000
+                      value: 4196
+                      formatted: Rp4.196
+                      has_deviation: true
+                    subtotal:
+                      request: 458040
+                      offer: 500000
+                      value: 41960
+                      formatted: Rp41.960
+                      has_deviation: true
+                    delivery_date:
+                      request: '2025-09-29T17:00:00.000Z'
+                      request_formatted: 30 Sep 2025
+                      offer: '2025-10-11T00:00:00.000Z'
+                      offer_formatted: 11 Oct 2025
+                      days_diff: 11
+                      formatted: 11 days
+                      has_deviation: true
+                    brand:
+                      request: '-'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: '-'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+                  quantity_deviation: 0
+                  price_deviation: 4196
+                  subtotal_deviation: 41960
+                  delivery_date_deviation: 11 days
+              costSaving:
+                baselineSpend: 5660680
+                actualSpend: 6190000
+                actualSaving: -529320
+                savingPercentage: -9.35
+      headers: {}
+  security:
+    - bearer: []

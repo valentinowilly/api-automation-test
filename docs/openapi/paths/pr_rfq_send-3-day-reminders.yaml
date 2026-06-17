@@ -1,0 +1,37 @@
+post:
+  summary: Send 3-day pending RFQ reminders
+  deprecated: false
+  description: |
+    **Cron Job / Manual Trigger**
+
+    Send reminder emails for RFQs pending for 3 days.
+
+    **Logic**: For dual-vendor RFQs where Vendor 1 hasn't responded:
+    - Duplicates RFQ for Vendor 2
+    - Sends RFQ email to Vendor 2
+
+    **Execution**: Can be triggered manually or via cron schedule.
+  operationId: send3DayReminders
+  tags:
+    - Cron Jobs & Manual Triggers
+  parameters: []
+  responses:
+    '200':
+      description: Reminders processed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  processed:
+                    type: integer
+                  emails_sent:
+                    type: integer
+      headers: {}
+  security:
+    - bearer: []

@@ -1,0 +1,67 @@
+put:
+  summary: Update master-hierarchy
+  deprecated: false
+  description: Update material group item
+  tags:
+    - Master Data/Material Hierarchy
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example:
+          - id: 4
+            material_group: '002'
+            server: ECC
+            extended_material_group: EXT003
+            material_number: MAT-00004
+            is_active: true
+    required: true
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+          example:
+            message: Master Hierarchy updated successfully
+            data: null
+      headers: {}
+  security:
+    - bearer: []
+delete:
+  summary: Delete master-hierarchy
+  deprecated: true
+  description: Soft delete material group item
+  tags:
+    - Master Data/Material Hierarchy
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example:
+          - 1
+          - 2
+          - 3
+    required: true
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+          example:
+            message: Master Hierarchy deleted successfully
+            data: null
+      headers: {}
+  security:
+    - bearer: []

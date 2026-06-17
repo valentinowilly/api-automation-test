@@ -1,0 +1,409 @@
+get:
+  summary: Get Material Assignment Pagination
+  deprecated: false
+  description: ''
+  tags:
+    - Master Data/Material Assignment
+  parameters:
+    - name: page
+      in: query
+      description: ''
+      required: false
+      example: '1'
+      schema:
+        type: string
+    - name: limit
+      in: query
+      description: ''
+      required: false
+      example: '10'
+      schema:
+        type: string
+    - name: search
+      in: query
+      description: ''
+      required: false
+      example: '1000'
+      schema:
+        type: string
+    - name: sort_by
+      in: query
+      description: ''
+      required: false
+      example: server_groups
+      schema:
+        type: string
+        enum:
+          - group_value
+          - server_groups
+        default: server_groups
+    - name: order
+      in: query
+      description: ''
+      required: false
+      example: desc
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: asc
+    - name: is_active
+      in: query
+      description: ''
+      required: false
+      example: 'false'
+      schema:
+        type: boolean
+    - name: server_groups
+      in: query
+      description: ''
+      required: false
+      schema:
+        type: string
+    - name: parent_id
+      in: query
+      description: ''
+      required: false
+      example: '33'
+      schema:
+        type: string
+    - name: vendor_direct_id
+      in: query
+      description: ''
+      required: false
+      example: '1'
+      schema:
+        type: string
+    - name: vendor_aggregator_ids[]
+      in: query
+      description: ''
+      required: false
+      example: '2'
+      schema:
+        type: string
+    - name: category_id
+      in: query
+      description: ''
+      required: false
+      example: '1'
+      schema:
+        type: string
+    - name: sub_category_id
+      in: query
+      description: ''
+      required: false
+      example: '17'
+      schema:
+        type: string
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        type:
+                          type: object
+                          properties:
+                            value:
+                              type: integer
+                            label:
+                              type: string
+                          required:
+                            - value
+                            - label
+                        created_at:
+                          type: string
+                        updated_at:
+                          type: string
+                        deleted_at:
+                          type: string
+                          nullable: true
+                      required:
+                        - id
+                        - name
+                        - email
+                        - type
+                        - created_at
+                        - updated_at
+                        - deleted_at
+                  pagination:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      itemsPerPage:
+                        type: integer
+                    required:
+                      - totalItems
+                      - totalPages
+                      - currentPage
+                      - itemsPerPage
+                required:
+                  - data
+                  - pagination
+            required:
+              - message
+              - data
+          example:
+            message: Material Assignment found successfully
+            data:
+              data:
+                - id: 34
+                  parent_id: 33
+                  server_groups: BCG
+                  group_type: extended_material_group
+                  group_value: '1110'
+                  vendor_direct_id: null
+                  category_id: null
+                  sub_category_id: null
+                  is_active: true
+                  created_at: '2026-03-18T21:01:21.000Z'
+                  updated_at: '2026-03-18T21:01:21.000Z'
+                  category: null
+                  vendor_direct: null
+                  sub_category: null
+                  vendor_aggregates: []
+                - id: 82
+                  parent_id: 33
+                  server_groups: BCG
+                  group_type: extended_material_group
+                  group_value: '1111'
+                  vendor_direct_id: null
+                  category_id: null
+                  sub_category_id: null
+                  is_active: true
+                  created_at: '2026-03-18T21:40:04.000Z'
+                  updated_at: '2026-03-18T21:40:04.000Z'
+                  category: null
+                  vendor_direct: null
+                  sub_category: null
+                  vendor_aggregates: []
+              pagination:
+                totalItems: 2
+                totalPages: 1
+                currentPage: 1
+                itemsPerPage: 10
+      headers: {}
+  security:
+    - bearer: []
+put:
+  summary: Update Material Assignment
+  deprecated: false
+  description: ''
+  tags:
+    - Master Data/Material Assignment
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example:
+          - id: 35
+            vendor_direct_id: 1
+            category_id: 1
+            sub_category_id: 17
+            is_active: true
+            vendor_aggregator_ids:
+              - 2
+    required: true
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        type:
+                          type: object
+                          properties:
+                            value:
+                              type: integer
+                            label:
+                              type: string
+                          required:
+                            - value
+                            - label
+                        created_at:
+                          type: string
+                        updated_at:
+                          type: string
+                        deleted_at:
+                          type: string
+                          nullable: true
+                      required:
+                        - id
+                        - name
+                        - email
+                        - type
+                        - created_at
+                        - updated_at
+                        - deleted_at
+                  pagination:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      itemsPerPage:
+                        type: integer
+                    required:
+                      - totalItems
+                      - totalPages
+                      - currentPage
+                      - itemsPerPage
+                required:
+                  - data
+                  - pagination
+            required:
+              - message
+              - data
+          example:
+            message: Material Assignment updated successfully
+            data: null
+      headers: {}
+  security:
+    - bearer: []
+delete:
+  summary: Delete Material Asignment
+  deprecated: true
+  description: ''
+  tags:
+    - Master Data/Material Assignment
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example:
+          - id: 35
+            vendor_direct_id: 1
+            category_id: 1
+            sub_category_id: 17
+            is_active: true
+            vendor_aggregator_ids:
+              - 2
+    required: true
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        type:
+                          type: object
+                          properties:
+                            value:
+                              type: integer
+                            label:
+                              type: string
+                          required:
+                            - value
+                            - label
+                        created_at:
+                          type: string
+                        updated_at:
+                          type: string
+                        deleted_at:
+                          type: string
+                          nullable: true
+                      required:
+                        - id
+                        - name
+                        - email
+                        - type
+                        - created_at
+                        - updated_at
+                        - deleted_at
+                  pagination:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      itemsPerPage:
+                        type: integer
+                    required:
+                      - totalItems
+                      - totalPages
+                      - currentPage
+                      - itemsPerPage
+                required:
+                  - data
+                  - pagination
+            required:
+              - message
+              - data
+          example:
+            message: Material Assignment updated successfully
+            data: null
+      headers: {}
+  security:
+    - bearer: []

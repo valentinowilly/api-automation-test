@@ -1,0 +1,53 @@
+post:
+  summary: User login
+  deprecated: false
+  description: >
+    Authenticate user with email and password, returns JWT token and user
+    details.
+
+
+    Supports both dashboard users (CS/CL/DIC/Admin) with role-based access.
+
+
+    Users may have multiple roles (e.g., both CS and CL).
+  operationId: login
+  tags:
+    - Authentication/Old method (Deprecated)
+    - Authentication
+  parameters: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example:
+          email: nicky.laksmana@sinarmasmining.com
+          password: 1Cz3DPsVmwAS7FawsKT1pFkJXZsAGbto
+  responses:
+    '200':
+      description: Login successful
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties: {}
+          example:
+            message: Login Succesful
+            data:
+              user_id: 1
+              name: CS User Name
+              email: cs.user@example.com
+              roles_id: 2
+              roles:
+                - roles_id: 2
+                  level: cs
+              jwtToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      headers: {}
+  security:
+    - bearer: []

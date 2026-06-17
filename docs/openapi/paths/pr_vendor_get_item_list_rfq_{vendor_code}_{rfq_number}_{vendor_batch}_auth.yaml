@@ -1,0 +1,86 @@
+get:
+  tags:
+    - Vendor Operations
+  summary: Get vendor RFQ item list (auth-based)
+  description: >
+    Retrieves the list of RFQ items for a specific vendor using Bearer token authentication instead of URL token parameter. This is an alternative endpoint to the token-based version, used when the vendor is already authenticated in the dashboard.
+    
+    The endpoint returns items assigned to the specified vendor for quotation submission.
+  operationId: getVendorRfqItemListAuth
+  security:
+    - emailToken: []
+  parameters:
+    - name: vendor_code
+      in: path
+      required: true
+      description: Vendor code (e.g., V001)
+      schema:
+        type: string
+      example: "V001"
+    - name: rfq_number
+      in: path
+      required: true
+      description: RFQ number (e.g., RFQ0000042)
+      schema:
+        type: string
+        pattern: '^RFQ[0-9]{7}$'
+      example: "RFQ0000042"
+    - name: vendor_batch
+      in: path
+      required: true
+      description: Vendor batch number
+      schema:
+        type: integer
+      example: 1
+  responses:
+    '200':
+      description: Successfully retrieved RFQ items
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/StandardResponse.yaml'
+          example:
+            message: "RFQ items retrieved successfully"
+            data:
+              rfq_number: "RFQ0000042"
+              vendor_code: "V001"
+              vendor_name: "PT Vendor Example"
+              vendor_batch: 1
+              items:
+                - item_id: 1
+                  pr_number: "PR0000123"
+                  material_name: "Office Chair"
+                  quantity: 10
+                  unit: "PCS"
+                  delivery_date: "2026-05-30"
+                  status: "PENDING"
+    '400':
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: Unauthorized - invalid or expired email token
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+    '404':
+      description: RFQ not found for specified vendor
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "RFQ not found for this vendor"
+            data: null
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "Failed to retrieve RFQ items"
+            data: null

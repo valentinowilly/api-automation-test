@@ -1,0 +1,57 @@
+get:
+  tags:
+    - Purchase Requests
+  summary: Get SAP storage location list
+  description: >
+    Retrieves the list of SAP storage locations (SLOC) for a specific plant. This endpoint integrates with SAP to fetch available storage locations for purchase request creation.
+  operationId: getSapSlocList
+  security:
+    - bearer: []
+  parameters:
+    - name: plant
+      in: query
+      required: true
+      description: SAP plant code
+      schema:
+        type: string
+      example: "P001"
+  responses:
+    '200':
+      description: Successfully retrieved SAP storage location list
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/StandardResponse.yaml'
+          example:
+            message: "SAP storage locations retrieved successfully"
+            data:
+              - sloc_code: "SL01"
+                sloc_name: "Main Warehouse"
+                plant_code: "P001"
+              - sloc_code: "SL02"
+                sloc_name: "Secondary Storage"
+                plant_code: "P001"
+    '400':
+      description: Bad request - missing or invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "Plant code is required"
+            data: null
+    '401':
+      description: Unauthorized - invalid or missing JWT token
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+    '500':
+      description: Internal server error or SAP integration failure
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "Failed to fetch SAP storage locations"
+            data: null

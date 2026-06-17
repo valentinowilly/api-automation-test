@@ -1,0 +1,1075 @@
+Enum "approver_users_group_enum" {
+  "bcg"
+  "gems"
+  "all"
+}
+
+Enum "approver_users_tipe_enum" {
+  "pr"
+  "po"
+  "all"
+}
+
+Enum "outstanding_it_notif_tipe_enum" {
+  "pr"
+  "po"
+}
+
+Enum "outstanding_notif_tipe_enum" {
+  "pr"
+  "po"
+}
+
+Enum "outstanding_notif_group_enum" {
+  "bcg"
+  "gems"
+}
+
+Enum "outstanding_notif_history_tipe_enum" {
+  "pr"
+  "po"
+}
+
+Enum "outstanding_notif_history_group_enum" {
+  "bcg"
+  "gems"
+}
+
+Table "PRPO_SAP_2024" {
+  "server" varchar(10) [not null]
+  "pr_number" varchar(10) [not null]
+  "PR_released_date" date [not null]
+  "PO_created_date" date [not null]
+  "category" varchar(10) [not null]
+  Note: '''SELECT pr.server, pr.pr_number, min(pr.released_date) as PR_released_date, 
+max(po.created_date) AS PO_created_date, c.category FROM pr
+LEFT JOIN sap_search_library s ON pr.pr_number = s.pr_number
+LEFT JOIN po ON pr.pr_number = po.pr_number AND pr.server = po.server
+LEFT JOIN custom_procurement_category c ON po.created_by = c.user_id
+WHERE 
+year(pr.released_date) = \'2024\'
+AND pr.purchasing_group_code !=\'BPA\'
+AND c.category IS not NULL
+AND c.category NOT IN (\'OA\', \'MRR-VHS\')
+AND pr.deleted = 0
+AND po.deleted = 0
+GROUP BY pr.server, pr.pr_number, c.category'''
+}
+
+Table "approver_users" {
+  "id" int [pk, not null, increment]
+  "name" varchar(255) [not null]
+  "username" varchar(255) [not null]
+  "position" varchar(100) [default: 'Unmapped Position']
+  "password" text [not null]
+  "group" approver_users_group_enum [not null]
+  "tipe" approver_users_tipe_enum
+  "created_at" datetime
+  "updated_at" datetime
+}
+
+Table "bkes_po_dashboard" {
+  "id" int [pk, not null, increment]
+  "company_id" int
+  "division_code" varchar(50)
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "po_number" text
+  "po_description" text [not null]
+  "po_status" varchar(255)
+  "spend_channel" varchar(20)
+  "value" double
+  "currency" text
+  "created_date" datetime
+  "week" int
+  "c_last_approval" varchar(5)
+  "c_final_approval" varchar(5)
+  "c1_division" varchar(100)
+  "c2_division" varchar(100)
+  "c3_division" varchar(100)
+  "c4_division" varchar(100)
+  "c5_division" varchar(100)
+  "c6_division" varchar(100)
+  "updated_at" timestamp
+  "total_leadtime" int
+}
+
+Table "bkes_po_detail_item" {
+  "id" int [pk, not null, increment]
+  "po_number" varchar(20) [not null]
+  "pr_number" varchar(20) [not null]
+  "pr_material_number" varchar(150) [not null]
+  "material_number" varchar(150) [not null]
+  "description" varchar(255) [not null]
+  "qty_item" int [not null, default: 0]
+  "unit_item" varchar(10)
+  "value" bigint [not null]
+  "currency" varchar(5) [not null]
+  "company_id" varchar(5) [not null]
+  "division_code" varchar(50) [note: 'division code ']
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50) [note: 'purchase group code']
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "status" varchar(15) [not null]
+  "outline" varchar(20)
+  "created_date" date [not null]
+  "modified_date" date [not null]
+  "c1_division" varchar(150)
+  "c1_pic" varchar(100)
+  "c1_datetime" datetime
+  "c1_leadtime" int
+  "c2_division" varchar(150)
+  "c2_pic" varchar(100)
+  "c2_datetime" datetime
+  "c2_leadtime" int
+  "c3_division" varchar(150)
+  "c3_pic" varchar(100)
+  "c3_datetime" datetime
+  "c3_leadtime" int
+  "c4_division" varchar(150)
+  "c4_pic" varchar(100)
+  "c4_datetime" datetime
+  "c4_leadtime" int
+  "c5_division" varchar(150)
+  "c5_pic" varchar(100)
+  "c5_datetime" datetime
+  "c5_leadtime" int
+  "c6_division" varchar(150)
+  "c6_pic" varchar(100)
+  "c6_datetime" datetime
+  "c6_leadtime" int
+
+  Indexes {
+    po_number [type: btree, name: "idx_bkes_po_detail_item_po_number"]
+    pr_number [type: btree, name: "idx_bkes_po_detail_item_pr_number"]
+  }
+}
+
+Table "bkes_pr_dashboard" {
+  "id" int [pk, not null, increment]
+  "company_id" int
+  "division_code" varchar(50)
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "pr_number" text
+  "pr_description" text [not null]
+  "pr_status" varchar(255)
+  "pr_close" varchar(15)
+  "value" double
+  "currency" text
+  "src_value" double [note: 'untuk keperluan isourcing']
+  "src_currency" varchar(7) [note: 'untuk keperluan isourcing']
+  "created_date" datetime
+  "week" int
+  "c_last_approval" varchar(5)
+  "c_final_approval" varchar(5)
+  "c1_division" varchar(100)
+  "c2_division" varchar(100)
+  "c3_division" varchar(100)
+  "c4_division" varchar(100)
+  "c5_division" varchar(100)
+  "c6_division" varchar(100)
+  "updated_at" timestamp
+  "total_leadtime" int
+  "interim" varchar(5)
+}
+
+Table "bkes_pr_detail_item" {
+  "id" int [pk, not null, increment]
+  "pr_number" varchar(20) [not null]
+  "material_number" varchar(150) [not null]
+  "description" varchar(255) [not null]
+  "qty_item" int [not null, default: 0]
+  "unit_item" varchar(10)
+  "value" bigint [not null]
+  "currency" varchar(5) [not null]
+  "src_value" bigint [note: 'untuk keperluan isourcing']
+  "src_currency" varchar(5) [note: 'untuk keperluan isourcing']
+  "company_id" varchar(5) [not null]
+  "division_code" varchar(50) [note: 'division code ']
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50) [note: 'purchase group code']
+  "oa_number" varchar(15)
+  "oa_valid_end" date
+  "oa_category" varchar(10)
+  "oa_requester" varchar(150)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "status" varchar(15) [not null]
+  "pr_material_group" varchar(100)
+  "pr_service_group" varchar(100)
+  "pr_material_group_number" varchar(10)
+  "pr_service_group_number" varchar(10)
+  "pr_requestor_user" varchar(100)
+  "pr_requestor_email" varchar(150)
+  "pr_creator_user" varchar(150)
+  "pr_creator_email" varchar(200)
+  "created_date" date [not null]
+  "modified_date" date [not null]
+  "text_repeatorder" text
+  "c1_division" varchar(150)
+  "c1_pic" varchar(100)
+  "c1_datetime" datetime
+  "c1_leadtime" int
+  "c2_division" varchar(150)
+  "c2_pic" varchar(100)
+  "c2_datetime" datetime
+  "c2_leadtime" int
+  "c3_division" varchar(150)
+  "c3_pic" varchar(100)
+  "c3_datetime" datetime
+  "c3_leadtime" int
+  "c4_division" varchar(150)
+  "c4_pic" varchar(100)
+  "c4_datetime" datetime
+  "c4_leadtime" int
+  "c5_division" varchar(150)
+  "c5_pic" varchar(100)
+  "c5_datetime" datetime
+  "c5_leadtime" int
+  "c6_division" varchar(150)
+  "c6_pic" varchar(100)
+  "c6_datetime" datetime
+  "c6_leadtime" int
+  "region" varchar(20)
+  "price_item_idr" bigint
+  "acc_assign" varchar(10)
+
+  Indexes {
+    pr_number [type: btree, name: "idx_bkes_pr_detail_item_pr_number"]
+  }
+}
+
+Table "companies" {
+  "id" "int unsigned" [pk, not null, increment]
+  "company_code" "int unsigned"
+  "company_name" varchar(255)
+  "groupId" varchar(10) [not null]
+  "groupName" varchar(75) [not null]
+  "created_at" datetime
+  "updated_at" datetime
+  "company_inisial" varchar(10)
+}
+
+Table "delivery_notes" {
+  "id" int [pk, not null, increment]
+  "prpo_number" varchar(20) [not null]
+  "material_number" varchar(150) [not null]
+  "description" varchar(255) [not null]
+  "value" bigint [not null]
+  "currency" varchar(5) [not null]
+  "company_id" varchar(5) [not null]
+  "status" varchar(15) [not null]
+  "to" varchar(255) [not null]
+  "division" varchar(255) [not null]
+  "notes" text [not null]
+  "delivery_date" datetime [not null]
+  "last_modified" datetime [not null]
+  "created_at" datetime [not null]
+}
+
+Table "division" {
+  "id" int [pk, not null, increment]
+  "division_code" varchar(50) [not null]
+  "division_name" varchar(125) [not null]
+  "purchase_group_code" varchar(50) [not null]
+  "purchase_group_name" varchar(125) [not null]
+  "group" varchar(10) [note: 'Group Code (BCG, GEMS)']
+  "created_at" datetime [not null]
+  "updated_at" datetime [not null]
+  Note: 'Division include purchase group'
+}
+
+Table "email_config" {
+  "id" int [pk, not null, increment]
+  "key" varchar(100) [not null]
+  "email" varchar(255) [not null]
+  "email_name" varchar(255) [not null]
+  "sla" int [not null]
+  "bcc" varchar(255)
+}
+
+Table "gems_po_dashboard" {
+  "id" int [pk, not null, increment]
+  "company_id" int
+  "division_code" varchar(50)
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "po_number" text
+  "po_description" text [not null]
+  "po_status" varchar(255)
+  "spend_channel" varchar(20)
+  "value" double
+  "currency" text
+  "created_date" datetime
+  "week" int
+  "c_last_approval" varchar(5)
+  "c_final_approval" varchar(5)
+  "c1_division" varchar(100)
+  "c2_division" varchar(100)
+  "c3_division" varchar(100)
+  "c4_division" varchar(100)
+  "c5_division" varchar(100)
+  "c6_division" varchar(100)
+  "updated_at" timestamp
+  "total_leadtime" int
+}
+
+Table "gems_po_detail_item" {
+  "id" int [pk, not null, increment]
+  "po_number" varchar(20) [not null]
+  "pr_number" varchar(20) [not null]
+  "pr_material_number" varchar(150) [not null]
+  "material_number" varchar(150) [not null]
+  "description" varchar(255) [not null]
+  "qty_item" int [not null, default: 0]
+  "unit_item" varchar(10)
+  "value" bigint [not null]
+  "currency" varchar(5) [not null]
+  "company_id" varchar(5) [not null]
+  "division_code" varchar(50) [note: 'division code ']
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50) [note: 'purchase group code']
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "status" varchar(15) [not null]
+  "outline" varchar(20)
+  "created_date" date [not null]
+  "modified_date" date [not null]
+  "c1_division" varchar(150)
+  "c1_pic" varchar(100)
+  "c1_datetime" datetime
+  "c1_leadtime" int
+  "c2_division" varchar(150)
+  "c2_pic" varchar(100)
+  "c2_datetime" datetime
+  "c2_leadtime" int
+  "c3_division" varchar(150)
+  "c3_pic" varchar(100)
+  "c3_datetime" datetime
+  "c3_leadtime" int
+  "c4_division" varchar(150)
+  "c4_pic" varchar(100)
+  "c4_datetime" datetime
+  "c4_leadtime" int
+  "c5_division" varchar(150)
+  "c5_pic" varchar(100)
+  "c5_datetime" datetime
+  "c5_leadtime" int
+  "c6_division" varchar(150)
+  "c6_pic" varchar(100)
+  "c6_datetime" datetime
+  "c6_leadtime" int
+
+  Indexes {
+    po_number [type: btree, name: "idx_gems_po_detail_item_po_number"]
+    pr_number [type: btree, name: "idx_gems_po_detail_item_pr_number"]
+  }
+}
+
+Table "gems_pr_dashboard" {
+  "id" int [pk, not null, increment]
+  "company_id" int
+  "division_code" varchar(50)
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "pr_number" text
+  "pr_description" text [not null]
+  "pr_status" varchar(255)
+  "pr_close" varchar(15)
+  "value" double
+  "currency" text
+  "src_value" double [note: 'untuk keperluan isourcing']
+  "src_currency" varchar(7) [note: 'untuk keperluan isourcing']
+  "created_date" datetime
+  "week" int
+  "c_last_approval" varchar(5)
+  "c_final_approval" varchar(5)
+  "c1_division" varchar(100)
+  "c2_division" varchar(100)
+  "c3_division" varchar(100)
+  "c4_division" varchar(100)
+  "c5_division" varchar(100)
+  "c6_division" varchar(100)
+  "updated_at" timestamp
+  "total_leadtime" int
+  "interim" varchar(5)
+}
+
+Table "gems_pr_detail_item" {
+  "id" int [pk, not null, increment]
+  "pr_number" varchar(20) [not null]
+  "material_number" varchar(150) [not null]
+  "description" varchar(255) [not null]
+  "qty_item" int [not null, default: 0]
+  "unit_item" varchar(10)
+  "value" bigint [not null]
+  "currency" varchar(5) [not null]
+  "src_value" bigint [note: 'untuk keperluan isourcing']
+  "src_currency" varchar(5) [note: 'untuk keperluan isourcing']
+  "company_id" varchar(5) [not null]
+  "division_code" varchar(50) [note: 'division code ']
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50) [note: 'purchase group code']
+  "oa_number" varchar(15)
+  "oa_valid_end" date
+  "oa_category" varchar(10)
+  "oa_requester" varchar(150)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "status" varchar(15) [not null]
+  "pr_material_group" varchar(100)
+  "pr_service_group" varchar(100)
+  "pr_material_group_number" varchar(10)
+  "pr_service_group_number" varchar(10)
+  "pr_requestor_user" varchar(100)
+  "pr_requestor_email" varchar(150)
+  "pr_creator_user" varchar(150)
+  "pr_creator_email" varchar(200)
+  "created_date" date [not null]
+  "modified_date" date [not null]
+  "text_repeatorder" text
+  "c1_division" varchar(150)
+  "c1_pic" varchar(100)
+  "c1_datetime" datetime
+  "c1_leadtime" int
+  "c2_division" varchar(150)
+  "c2_pic" varchar(100)
+  "c2_datetime" datetime
+  "c2_leadtime" int
+  "c3_division" varchar(150)
+  "c3_pic" varchar(100)
+  "c3_datetime" datetime
+  "c3_leadtime" int
+  "c4_division" varchar(150)
+  "c4_pic" varchar(100)
+  "c4_datetime" datetime
+  "c4_leadtime" int
+  "c5_division" varchar(150)
+  "c5_pic" varchar(100)
+  "c5_datetime" datetime
+  "c5_leadtime" int
+  "c6_division" varchar(150)
+  "c6_pic" varchar(100)
+  "c6_datetime" datetime
+  "c6_leadtime" int
+  "pr_risk" varchar(5)
+  "pr_permit1" varchar(200)
+  "pr_permit2" varchar(200)
+  "pr_permit3" varchar(200)
+  "region" varchar(20)
+  "price_item_idr" bigint
+  "acc_assign" varchar(10)
+
+  Indexes {
+    pr_number [type: btree, name: "idx_gems_pr_detail_item_pr_number"]
+  }
+}
+
+Table "gems_table_po_approval" {
+  "id" int [pk, not null, increment]
+  "pr_number" int [not null]
+  "status" varchar(200) [not null]
+  "c_division" varchar(200) [not null]
+  "c_pic" varchar(200) [not null]
+  "c_date" datetime [not null]
+  "c_level" varchar(5) [not null]
+  "lead_time" int [not null]
+
+  Indexes {
+    pr_number [type: btree, name: "pr_number"]
+  }
+}
+
+Table "gems_table_pr_approval" {
+  "id" int [pk, not null, increment]
+  "pr_number" varchar(20)
+  "status" varchar(15)
+  "c_division" varchar(150)
+  "c_pic" varchar(100)
+  "c_date" datetime
+  "c_level" varchar(5) [not null]
+  "lead_time" int
+
+  Indexes {
+    pr_number [type: btree, name: "pr_number"]
+  }
+}
+
+Table "itor_library" {
+  "id" int [pk, not null, increment]
+  "tor_number" varchar(50)
+  "pr_number" varchar(50)
+  "pr_group" varchar(5)
+  "tor_released_date" datetime
+  "tor_status" varchar(50)
+  Note: 'iTor Library'
+}
+
+Table "itor_syncemail" {
+  "id" int [pk, not null, increment]
+  "tor_number" varchar(25) [not null]
+  "pr_number" varchar(25) [not null]
+  "tipe_email" int
+  "status" tinyint
+  Note: 'untuk validasi hit API'
+}
+
+Table "logs" {
+  "logs_id" "int unsigned" [pk, not null, increment]
+  "client_ip" varchar(255) [not null]
+  "route" varchar(255) [not null]
+  "parameters" varchar(255) [not null]
+  "created_at" timestamp
+  "updated_at" timestamp
+}
+
+Table "migrations" {
+  "id" int [pk, not null, increment]
+  "migration" varchar(255) [not null]
+  "batch" int [not null]
+  "upload_date" datetime [not null]
+  "created_at" timestamp
+  "updated_at" timestamp
+  "total_rows" bigint [not null]
+  "tipe" varchar(5) [not null]
+}
+
+Table "outstanding_it_notif" {
+  "id" int [pk, not null, increment]
+  "tipe" outstanding_it_notif_tipe_enum [not null, note: 'pr or po']
+  "total" int [not null, default: 0]
+  "new_outstanding_total" int [not null, default: 0]
+  "release_total" int [not null, default: 0]
+  "current_date" date [not null]
+}
+
+Table "outstanding_it_notif_history" {
+  "id" int [pk, not null, increment]
+  "pr_number" varchar(45) [not null]
+  "po_number" varchar(45)
+  "created_date" date [not null]
+  "current_date" date [not null]
+}
+
+Table "outstanding_notif" {
+  "id" int [pk, not null, increment]
+  "tipe" outstanding_notif_tipe_enum [not null, note: 'pr or po']
+  "group" outstanding_notif_group_enum [not null, note: 'bcg or gems']
+  "company_id" int [not null]
+  "total" int [not null, default: 0]
+  "new_outstanding_total" int [not null, default: 0]
+  "release_total" int [not null, default: 0]
+  "start_date" date
+  "current_date" date [not null]
+}
+
+Table "outstanding_notif_history" {
+  "id" int [pk, not null, increment]
+  "tipe" outstanding_notif_history_tipe_enum [not null]
+  "group" outstanding_notif_history_group_enum [not null]
+  "company_id" int [not null]
+  "number" varchar(45) [not null]
+  "current_date" date [not null]
+  "created_date" date [not null]
+}
+
+Table "password_resets" {
+  "email" varchar(255) [not null]
+  "token" varchar(255) [not null]
+  "created_at" "timestamp on update CURRENT_TIMESTAMP" [not null, default: `CURRENT_TIMESTAMP`]
+
+  Indexes {
+    email [type: btree, name: "password_resets_email_index"]
+    token [type: btree, name: "password_resets_token_index"]
+  }
+}
+
+Table "pi_dashboard" {
+  "id" int [pk, not null, increment]
+  "pi_proj_number" varchar(20) [not null]
+  "im_number" varchar(20) [not null, note: 'IM Number']
+  "im_value" bigint [not null]
+  "pi_description" text [not null]
+  "pi_company_id" varchar(5) [not null, note: 'e.g : 1000, 3000']
+  "pi_proj_value" bigint [not null, note: 'value_wbs_element']
+  "pi_proj_currency" varchar(5) [not null]
+  "pi_created_date" date [not null]
+  "pi_modified_date" date
+  "pi_release_date" date [not null]
+  "pi_status" varchar(20) [not null, note: 'wbs status release']
+  "pi_created_by" varchar(20)
+  "pi_release_by" varchar(20)
+  Note: 'table PI - Header'
+}
+
+Table "pi_detail_item" {
+  "id" int [pk, not null, increment]
+  "pi_proj_number" varchar(20) [not null]
+  "pi_number" varchar(20) [not null]
+  "pr_number" varchar(20) [not null, note: 'PR Number']
+  "pr_item" varchar(5) [not null, note: 'PR item']
+  "pi_created_date" date [note: 'date data im added']
+  "pi_modified_date" date [note: 'date data im modified']
+  Note: 'table PI (IM) - Detail'
+}
+
+Table "po_dashboard" {
+  "id" int [pk, not null, increment]
+  "company_id" int
+  "division_code" varchar(50)
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "po_number" text
+  "po_description" text [not null]
+  "po_status" varchar(255)
+  "spend_channel" varchar(20)
+  "value" double
+  "currency" text
+  "created_date" datetime
+  "week" int
+  "c_last_approval" varchar(5)
+  "c_final_approval" varchar(5)
+  "c1_division" varchar(100)
+  "c2_division" varchar(100)
+  "c3_division" varchar(100)
+  "c4_division" varchar(100)
+  "c5_division" varchar(100)
+  "c6_division" varchar(100)
+  "updated_at" timestamp
+  "total_leadtime" int
+}
+
+Table "po_detail_item" {
+  "id" int [pk, not null, increment]
+  "po_number" varchar(20) [not null]
+  "pr_number" varchar(20) [not null]
+  "pr_material_number" varchar(150) [not null]
+  "material_number" varchar(150) [not null]
+  "description" varchar(255) [not null]
+  "qty_item" int [not null, default: 0]
+  "unit_item" varchar(10)
+  "value" bigint [not null]
+  "currency" varchar(5) [not null]
+  "company_id" varchar(5) [not null]
+  "division_code" varchar(50) [note: 'division code ']
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50) [note: 'purchase group code']
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "status" varchar(15) [not null]
+  "outline" varchar(20)
+  "created_date" date [not null]
+  "modified_date" date [not null]
+  "c1_division" varchar(150)
+  "c1_pic" varchar(100)
+  "c1_datetime" datetime
+  "c1_leadtime" int
+  "c2_division" varchar(150)
+  "c2_pic" varchar(100)
+  "c2_datetime" datetime
+  "c2_leadtime" int
+  "c3_division" varchar(150)
+  "c3_pic" varchar(100)
+  "c3_datetime" datetime
+  "c3_leadtime" int
+  "c4_division" varchar(150)
+  "c4_pic" varchar(100)
+  "c4_datetime" datetime
+  "c4_leadtime" int
+  "c5_division" varchar(150)
+  "c5_pic" varchar(100)
+  "c5_datetime" datetime
+  "c5_leadtime" int
+  "c6_division" varchar(150)
+  "c6_pic" varchar(100)
+  "c6_datetime" datetime
+  "c6_leadtime" int
+
+  Indexes {
+    po_number [type: btree, name: "idx_po_detail_item_po_number"]
+    pr_number [type: btree, name: "idx_po_detail_item_pr_number"]
+  }
+}
+
+Table "pr_dashboard" {
+  "id" int [pk, not null, increment]
+  "company_id" int
+  "division_code" varchar(50)
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "pr_number" text
+  "pr_description" text [not null]
+  "pr_status" varchar(255)
+  "pr_close" varchar(15)
+  "value" double
+  "currency" text
+  "src_value" double [note: 'untuk keperluan isourcing']
+  "src_currency" varchar(7) [note: 'untuk keperluan isourcing']
+  "created_date" datetime
+  "week" int
+  "c_last_approval" varchar(5)
+  "c_final_approval" varchar(5)
+  "c1_division" varchar(100)
+  "c2_division" varchar(100)
+  "c3_division" varchar(100)
+  "c4_division" varchar(100)
+  "c5_division" varchar(100)
+  "c6_division" varchar(100)
+  "updated_at" timestamp
+  "total_leadtime" int
+  "interim" varchar(5)
+}
+
+Table "pr_detail_item" {
+  "id" int [pk, not null, increment]
+  "pr_number" varchar(20) [not null]
+  "material_number" varchar(150) [not null]
+  "description" varchar(255) [not null]
+  "qty_item" int [not null, default: 0]
+  "unit_item" varchar(10)
+  "value" bigint [not null]
+  "currency" varchar(5) [not null]
+  "src_value" bigint [note: 'untuk keperluan isourcing']
+  "src_currency" varchar(5) [note: 'untuk keperluan isourcing']
+  "company_id" varchar(5) [not null]
+  "division_code" varchar(50) [note: 'division code ']
+  "division_name" varchar(100) [note: 'Division Name']
+  "purchase_group_code" varchar(50) [note: 'purchase group code']
+  "oa_number" varchar(15)
+  "oa_valid_end" date
+  "oa_category" varchar(10)
+  "oa_requester" varchar(150)
+  "purchase_group_name" varchar(100) [note: 'purchase group name']
+  "status" varchar(15) [not null]
+  "pr_material_group" varchar(100)
+  "pr_service_group" varchar(100)
+  "pr_material_group_number" varchar(10)
+  "pr_service_group_number" varchar(10)
+  "pr_requestor_user" varchar(100)
+  "pr_requestor_email" varchar(150)
+  "pr_creator_user" varchar(150)
+  "pr_creator_email" varchar(200)
+  "created_date" date [not null]
+  "modified_date" date [not null]
+  "text_repeatorder" text
+  "c1_division" varchar(150)
+  "c1_pic" varchar(100)
+  "c1_datetime" datetime
+  "c1_leadtime" int
+  "c2_division" varchar(150)
+  "c2_pic" varchar(100)
+  "c2_datetime" datetime
+  "c2_leadtime" int
+  "c3_division" varchar(150)
+  "c3_pic" varchar(100)
+  "c3_datetime" datetime
+  "c3_leadtime" int
+  "c4_division" varchar(150)
+  "c4_pic" varchar(100)
+  "c4_datetime" datetime
+  "c4_leadtime" int
+  "c5_division" varchar(150)
+  "c5_pic" varchar(100)
+  "c5_datetime" datetime
+  "c5_leadtime" int
+  "c6_division" varchar(150)
+  "c6_pic" varchar(100)
+  "c6_datetime" datetime
+  "c6_leadtime" int
+  "pr_risk" varchar(5)
+  "pr_permit1" varchar(200)
+  "pr_permit2" varchar(200)
+  "pr_permit3" varchar(200)
+  "region" varchar(20)
+  "price_item_idr" bigint
+  "acc_assign" varchar(10)
+
+  Indexes {
+    pr_number [type: btree, name: "idx_pr_detail_item_pr_number"]
+  }
+}
+
+Table "pr_po_text" {
+  "id" int [pk, not null, increment]
+  "purchase_number" varchar(20) [not null]
+  "material_number" int [not null]
+  "description" text [not null]
+  "purchase_type" varchar(5) [note: 'PR, PO']
+  "purchase_group" varchar(5) [not null, note: 'BCG, GEMS']
+  "purchase_material_type" varchar(10) [not null, note: 'Material, Non']
+}
+
+Table "sap_search_library" {
+  "id" int [pk, not null, increment]
+  "tipe_data" varchar(9) [note: 'DASHBOARD or DETAILS']
+  "pr_number" varchar(20)
+  "im_number" varchar(20) [note: 'im number']
+  "pi_number" varchar(20)
+  "jumlah_po" int
+  "po_number" varchar(20)
+  "material_identification" varchar(1)
+  "material_number" varchar(10) [note: 'Dashboard = jumlah item, Detail = ID Item']
+  "pr_material_number" int
+  "pr_material_group" varchar(100)
+  "pr_service_group" varchar(100)
+  "pr_material_group_number" varchar(10)
+  "pr_service_group_number" varchar(10)
+  "pr_requestor_user" varchar(100)
+  "pr_requestor_email" varchar(150)
+  "pr_creator_user" varchar(150)
+  "pr_creator_email" varchar(200)
+  "text" text
+  "tipe" varchar(2) [note: 'PR atau PO']
+  "qty_item" int [not null, default: 0]
+  "unit_item" varchar(10)
+  "value" bigint [not null]
+  "currency" varchar(5)
+  "src_value" bigint
+  "src_currency" varchar(5)
+  "groups" varchar(10) [note: 'gems or bc']
+  "company" varchar(6) [not null]
+  "create_date" datetime [not null]
+  "pr_release_date" datetime
+  "po_create_date" datetime
+  "po_release_date" datetime
+  "status" varchar(50) [not null]
+  "outline" varchar(20)
+  "spend_channel" varchar(20)
+  "pr_close" varchar(15)
+  "division" varchar(100) [not null]
+  "purchase_group" varchar(100) [not null]
+  "approval_leadtime" int
+  "qcf_leadtime" int
+  "pr_risk" varchar(5)
+  "pr_permit1" varchar(200)
+  "pr_permit2" varchar(200)
+  "pr_permit3" varchar(200)
+  "region" varchar(20)
+  "price_item_idr" bigint
+  "acc_assign" varchar(10)
+  "purchase_group_code" varchar(50)
+  "oa_number" varchar(15)
+  "oa_valid_end" date
+  "oa_category" varchar(10)
+  "oa_requester" varchar(150)
+  "text_repeatorder" text
+  "interim" varchar(5)
+  "c1_pic" varchar(100)
+  "c1_leadtime" int
+  "c1_division" varchar(150)
+  "c1_datetime" datetime
+  "c2_pic" varchar(100)
+  "c2_leadtime" int
+  "c2_division" varchar(150)
+  "c2_datetime" datetime
+  "c3_pic" varchar(100)
+  "c3_leadtime" int
+  "c3_datetime" datetime
+  "c3_division" varchar(150)
+  "c4_pic" varchar(100)
+  "c4_leadtime" int
+  "c4_datetime" datetime
+  "c4_division" varchar(150)
+  "c5_pic" varchar(100)
+  "c5_leadtime" int
+  "c5_datetime" datetime
+  "c5_division" int
+  "c6_pic" varchar(100)
+  "c6_leadtime" int
+  "c6_datetime" datetime
+  "c6_division" varchar(150)
+
+  Indexes {
+    (company, groups) [type: btree, name: "groups"]
+    (po_number, pi_number, im_number) [type: btree, name: "im_number"]
+    pr_number [type: btree, name: "numbernya_UNIQUE"]
+    purchase_group [type: btree, name: "purchase_group"]
+    `text(500)` [type: btree, name: "text_UNIQUE"]
+    (tipe, status, tipe_data) [type: btree, name: "tipe_data"]
+  }
+}
+
+Table "sap_storage_location" {
+  "server" char(4) [not null]
+  "plant_code" char(4) [not null]
+  "storage_location_code" char(4) [not null]
+  "storage_location_name" char(16)
+  "send_date" datetime
+
+  Indexes {
+    (server, plant_code, storage_location_code) [pk, name: "PRIMARY"]
+  }
+}
+
+Table "schema_migrations_prpo" {
+  "version" varchar(20) [pk, not null]
+  "applied_at" timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table "search_library" {
+  "id" int [pk, not null, increment, note: '1o = iSourcing']
+  "tipe_data" varchar(9) [note: '(1o) DASHBOARD (Header) or DETAILS']
+  "pr_number" varchar(20) [note: '(1o) PR Number']
+  "im_number" varchar(20) [note: 'internal Memo (IM)']
+  "pi_number" varchar(20) [note: 'TBD']
+  "jumlah_po" int [note: '(1o) Jumlah PO Per line item']
+  "po_number" varchar(20) [note: '(1o) Po number']
+  "material_identification" varchar(1) [note: 'TBD']
+  "material_number" varchar(10) [note: '(1o) Dashboard = jumlah item, Detail tipe PR = Line Item, Detail Tipe PO = Line PO']
+  "pr_type" varchar(10)
+  "pr_material_number" int [note: '(1o) Join untuk PO terhadap line item PR']
+  "pr_material_group" varchar(100) [note: '(1o) Matl group name']
+  "pr_service_group" varchar(100) [note: '(1o) Matl service group name']
+  "pr_material_group_number" varchar(10) [note: '(1o) Matl group number']
+  "pr_service_group_number" varchar(10) [note: '(1o) Matl service group number']
+  "pr_requestor_user" varchar(100) [note: '(1o) Kolom requested by pada PR']
+  "pr_requestor_email" varchar(150) [note: '(1o) Kolom email PIC pengadaan pada PR (Email csi)']
+  "pr_creator_user" varchar(150) [note: '(1o) User ID SAP (creator PR)']
+  "pr_creator_email" varchar(200) [note: '(1o) email SAP (creator PR)']
+  "text" text [note: '(1o) Short text (matl description)']
+  "tipe" varchar(2) [note: '(1o) PR atau PO']
+  "qty_item" int [not null, default: 0, note: '(1o) PR qty item']
+  "unit_item" varchar(10) [note: '(1o) uom']
+  "value" bigint [not null, note: '(1o) value convert to USD']
+  "currency" varchar(5) [note: '(1o) USD']
+  "src_value" bigint [note: '(1o) value sesuai PR SAP (bisa IDR atau USD)']
+  "src_currency" varchar(5) [note: '(1o) currency sesuai PR SAP (bisa IDR atau USD)']
+  "groups" varchar(10) [note: '(1o) Server SAP (gems,BC,BKES)']
+  "company" varchar(6) [not null, note: '(1o) company code']
+  "create_date" datetime [not null, note: '(1o) PR created date']
+  "pr_release_date" datetime [note: '(1o) PR released date']
+  "po_create_date" datetime [note: '(1o) PO created date']
+  "po_release_date" datetime [note: '(1o) PO released date']
+  "status" varchar(50) [not null, note: '(1o) full released: jika pr/po sudah full released. outstanding: jika blm fully approved']
+  "outline" varchar(20) [note: '(1o)']
+  "spend_channel" varchar(20) [note: '(1o)']
+  "pr_close" varchar(15)
+  "division" varchar(100) [not null, note: '(1o)']
+  "purchase_group" varchar(100) [not null, note: '(1o) purchasing group name']
+  "approval_leadtime" int
+  "qcf_leadtime" int
+  "pr_risk" varchar(5) [note: '(1o) BC: tingkat risiko. GEMS?']
+  "pr_permit1" varchar(200) [note: '(1o)']
+  "pr_permit2" varchar(200) [note: '(1o)']
+  "pr_permit3" varchar(200) [note: '(1o)']
+  "region" varchar(20) [note: '(1o)']
+  "price_item_idr" bigint [note: '(1o)']
+  "acc_assign" varchar(10) [note: '(1o) account assignment code']
+  "purchase_group_code" varchar(50) [note: '(1o) purchasing group code']
+  "oa_number" varchar(15) [note: '(1o) oa number']
+  "oa_valid_end" date [note: '(1o) oa validity end']
+  "oa_category" varchar(10) [note: '(1o)']
+  "oa_requester" varchar(150) [note: '(1o)']
+  "text_repeatorder" text [note: '(1o)']
+  "interim" varchar(5) [note: '(1o) jika 1 maka di exclude dari iSourcing']
+  "c1_pic" varchar(100) [note: 'L1 approve by (user id sap name)']
+  "c1_leadtime" int
+  "c1_division" varchar(150) [note: 'L1 approve by (MLA desc code)']
+  "c1_datetime" datetime [note: 'L1 approval date time']
+  "c2_pic" varchar(100) [note: 'L2 approve by (user id sap name)']
+  "c2_leadtime" int
+  "c2_division" varchar(150) [note: 'L2 approve by (MLA desc code)']
+  "c2_datetime" datetime [note: 'L2 approval date time']
+  "c3_pic" varchar(100) [note: 'L3 approve by (user id sap name)']
+  "c3_leadtime" int
+  "c3_datetime" datetime [note: 'L3 approval date time']
+  "c3_division" varchar(150) [note: 'L3 approve by (MLA desc code)']
+  "c4_pic" varchar(100) [note: 'L4 approve by (user id sap name)']
+  "c4_leadtime" int
+  "c4_datetime" datetime [note: 'L4 approval date time']
+  "c4_division" varchar(150) [note: 'L4 approve by (MLA desc code)']
+  "c5_pic" varchar(100) [note: 'L5 approve by (user id sap name)']
+  "c5_leadtime" int
+  "c5_datetime" datetime [note: 'L5 approval date time']
+  "c5_division" varchar(150) [note: 'L5 approve by (MLA desc code)']
+  "c6_pic" varchar(100) [note: 'L6 approve by (user id sap name)']
+  "c6_leadtime" int
+  "c6_datetime" datetime [note: 'L6 approval date time']
+  "c6_division" varchar(150) [note: 'L6 approve by (MLA desc code)']
+  "is_delete" tinyint
+  "is_oa" tinyint
+  "is_newItem" tinyint
+  "is_service" tinyint
+  "oem" varchar(18)
+  "external_material_group" varchar(10)
+  "external_material_group_name" varchar(60)
+  "nomor_material_sap" varchar(18) [note: 'material_number_asli']
+  "plant_code" varchar(4)
+  "plant_name" varchar(40)
+  "delivery_date" datetime
+  "send_date" datetime
+  "brand" varchar(50)
+  "garansi" tinyint
+  "is_da" tinyint
+  "storage_location_code" char(4)
+
+  Indexes {
+    (groups, company) [type: btree, name: "groups"]
+    (po_number, pi_number, im_number) [type: btree, name: "im_number"]
+    pr_number [type: btree, name: "numbernya_UNIQUE"]
+    purchase_group [type: btree, name: "purchase_group"]
+    `text(500)` [type: btree, name: "text_UNIQUE"]
+    (tipe_data, tipe, status) [type: btree, name: "tipe_data"]
+  }
+}
+
+Table "settings" {
+  "name" varchar(255) [pk, not null]
+  "value" text
+}
+
+Table "snapshot_chart_personal" {
+  "id" int [pk, not null, increment]
+  "chart_name" varchar(5) [not null, note: 'MTD, YTD']
+  "snapshot_date" datetime [note: 'now()']
+  "tipe" varchar(5) [not null, note: 'PR, PO, PRPO']
+  "personal_name" varchar(150) [not null]
+  "term" varchar(7) [not null, note: 'eg, 01-2017']
+  "days" varchar(5) [note: 'eg : >= 8']
+  "total" varchar(5) [note: 'total_pr/po']
+  "avg_lead_time" varchar(3) [note: 'average pr/po per sla_day']
+  "sla_on_target" varchar(3) [note: 'prosentase']
+  Note: 'Snapshoot_Chart_Personal'
+}
+
+Table "sourcing_status" {
+  "id" int [pk, not null, increment]
+  "pr_number" varchar(20) [not null]
+  "pr_isearch" varchar(20) [not null]
+  "company_group" varchar(5) [not null]
+  "latest_status" text
+  "cs_name" varchar(255)
+  "milestone" varchar(100)
+  "pr_status" varchar(100)
+}
+
+Table "system_activity" {
+  "id" int [pk, not null, increment]
+  "changed_in" varchar(255) [not null]
+  "activity_description" text [not null]
+  "created_at" timestamp
+  "updated_at" timestamp
+}
+
+Table "test_table" {
+  "idtest_table" int [pk, not null, increment]
+  "test_date" datetime
+  "test_tablecol" varchar(45)
+}
+
+Table "users" {
+  "id" "int unsigned" [pk, not null, increment]
+  "name" varchar(255) [not null]
+  "email" varchar(255) [unique, not null]
+  "password" varchar(255) [not null]
+  "api_token" varchar(60) [unique, not null]
+  "remember_token" varchar(100)
+  "created_at" timestamp
+  "updated_at" timestamp
+  "avatar" varchar(255)
+  "google_id" varchar(255)
+  "expires_in" int
+}

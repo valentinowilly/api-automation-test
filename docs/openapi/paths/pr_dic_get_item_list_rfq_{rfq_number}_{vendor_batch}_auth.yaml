@@ -1,0 +1,80 @@
+get:
+  tags:
+    - DIC Operations
+  summary: Get DIC RFQ item list (auth-based)
+  description: >
+    Retrieves the list of RFQ items for DIC confirmation using Bearer token authentication instead of URL token parameter. This is an alternative endpoint to the token-based version, used when the DIC user is already authenticated in the dashboard.
+    
+    The endpoint returns items awaiting DIC confirmation for the specified RFQ and vendor batch.
+  operationId: getDicRfqItemListAuth
+  security:
+    - emailToken: []
+  parameters:
+    - name: rfq_number
+      in: path
+      required: true
+      description: RFQ number (e.g., RFQ0000042)
+      schema:
+        type: string
+        pattern: '^RFQ[0-9]{7}$'
+      example: "RFQ0000042"
+    - name: vendor_batch
+      in: path
+      required: true
+      description: Vendor batch number
+      schema:
+        type: integer
+      example: 1
+  responses:
+    '200':
+      description: Successfully retrieved RFQ items for DIC confirmation
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/StandardResponse.yaml'
+          example:
+            message: "RFQ items retrieved successfully"
+            data:
+              rfq_number: "RFQ0000042"
+              vendor_batch: 1
+              pr_number: "PR0000123"
+              requester_name: "John Doe"
+              items:
+                - item_id: 1
+                  material_name: "Office Chair"
+                  quantity: 10
+                  unit: "PCS"
+                  vendor_price: 500000
+                  delivery_date: "2026-05-30"
+                  vendor_status: "ACCEPTED"
+                  dic_status: "PENDING"
+    '400':
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+    '401':
+      description: Unauthorized - invalid or expired email token
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+    '404':
+      description: RFQ not found
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "RFQ not found"
+            data: null
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ErrorResponse.yaml'
+          example:
+            message: "Failed to retrieve RFQ items"
+            data: null

@@ -1,0 +1,683 @@
+get:
+  summary: Get items not submitted by vendor
+  deprecated: false
+  description: |
+    Retrieve RFQ items that vendor has not yet submitted.
+  operationId: getNotSubmittedItems
+  tags:
+    - CS Operations
+  parameters:
+    - name: rfq_number
+      in: path
+      description: RFQ number identifier
+      required: true
+      example: RFQ0000624
+      schema:
+        type: string
+        pattern: ^RFQ[0-9BKG]{8,9}$
+        example: RFQ20240001
+    - name: vendor_batch
+      in: path
+      description: |
+        Vendor batch number (1 or 2 for dual-vendor RFQs).
+
+        **Important**: In dual-vendor scenarios:
+        - Batch 1: Primary vendor
+        - Batch 2: Secondary vendor (only processed if Batch 1 declined)
+      required: true
+      example: 1
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2
+        example: 1
+    - name: vendor_code
+      in: query
+      description: ''
+      required: false
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Not submitted items retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  header:
+                    type: object
+                    properties:
+                      rfq_number:
+                        type: string
+                      pr_number:
+                        type: string
+                      purchasing_group:
+                        type: string
+                      pr_creator_name:
+                        type: string
+                      pr_creator_email:
+                        type: string
+                      pr_release_date:
+                        type: string
+                      sla_days:
+                        type: integer
+                      vendor_code:
+                        type: string
+                      vendor_name:
+                        type: string
+                      milestone:
+                        type: string
+                      sub_milestone:
+                        type: string
+                      quotation_number:
+                        type: string
+                        nullable: true
+                      quotation_date:
+                        type: string
+                        nullable: true
+                      document:
+                        type: string
+                        nullable: true
+                    required:
+                      - rfq_number
+                      - pr_number
+                      - purchasing_group
+                      - pr_creator_name
+                      - pr_creator_email
+                      - pr_release_date
+                      - sla_days
+                      - vendor_code
+                      - vendor_name
+                      - milestone
+                      - sub_milestone
+                      - quotation_number
+                      - quotation_date
+                      - document
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        request_quantity:
+                          type: integer
+                        request_price:
+                          type: string
+                        request_delivery_date:
+                          type: string
+                        location:
+                          type: string
+                        rfq_number:
+                          type: string
+                        item_code:
+                          type: string
+                        vendor_code:
+                          type: string
+                        offer_vendor_delivery_date:
+                          type: string
+                          nullable: true
+                        offer_vendor_price:
+                          type: number
+                          nullable: true
+                        vendor_description:
+                          type: string
+                          nullable: true
+                        reject_reason:
+                          type: string
+                          nullable: true
+                        vendor_reject_reason:
+                          type: string
+                          nullable: true
+                        status_dic:
+                          type: integer
+                          nullable: true
+                        status_milestone:
+                          type: integer
+                        offer_vendor_specification:
+                          type: string
+                          nullable: true
+                        offer_vendor_brand:
+                          type: string
+                          nullable: true
+                        offer_vendor_warranty:
+                          type: string
+                          nullable: true
+                        offer_vendor_sloc:
+                          type: string
+                          nullable: true
+                        offer_vendor_address_details:
+                          type: string
+                          nullable: true
+                        uom:
+                          type: string
+                        plant_code:
+                          type: string
+                        server_groups:
+                          type: string
+                        vendor_batch:
+                          type: integer
+                        status_vendor:
+                          type: integer
+                        createdAt:
+                          type: string
+                        request_brand:
+                          type: string
+                        request_warranty:
+                          type: integer
+                        request_unit_item:
+                          type: string
+                        request_sloc:
+                          type: string
+                          nullable: true
+                        plant_name:
+                          type: string
+                        vendor1_status:
+                          type: string
+                          nullable: true
+                        specification_images:
+                          type: string
+                          nullable: true
+                        dic_reject_reason_images:
+                          type: string
+                          nullable: true
+                        offer_vendor_sloc_name:
+                          type: string
+                          nullable: true
+                        deviations:
+                          type: object
+                          properties:
+                            quantity:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                offer:
+                                  type: string
+                                value:
+                                  type: integer
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - value
+                                - has_deviation
+                            price:
+                              type: object
+                              properties:
+                                request:
+                                  type: integer
+                                offer:
+                                  type: integer
+                                value:
+                                  type: integer
+                                formatted:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - value
+                                - formatted
+                                - has_deviation
+                            subtotal:
+                              type: object
+                              properties:
+                                request:
+                                  type: integer
+                                offer:
+                                  type: integer
+                                value:
+                                  type: integer
+                                formatted:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - value
+                                - formatted
+                                - has_deviation
+                            delivery_date:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                request_formatted:
+                                  type: string
+                                offer:
+                                  type: string
+                                offer_formatted:
+                                  type: string
+                                days_diff:
+                                  type: integer
+                                formatted:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - request_formatted
+                                - offer
+                                - offer_formatted
+                                - days_diff
+                                - formatted
+                                - has_deviation
+                            brand:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                offer:
+                                  type: string
+                                status:
+                                  type: string
+                                has_deviation:
+                                  type: string
+                              required:
+                                - request
+                                - offer
+                                - status
+                                - has_deviation
+                            warranty:
+                              type: object
+                              properties:
+                                request:
+                                  type: integer
+                                offer:
+                                  type: integer
+                                request_formatted:
+                                  type: string
+                                offer_formatted:
+                                  type: string
+                                value:
+                                  type: integer
+                                formatted:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - request_formatted
+                                - offer_formatted
+                                - value
+                                - formatted
+                                - has_deviation
+                            delivery_address:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                offer:
+                                  type: string
+                                vendor_sloc_codes:
+                                  type: string
+                                status:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - vendor_sloc_codes
+                                - status
+                                - has_deviation
+                            address_details:
+                              type: object
+                              properties:
+                                request:
+                                  type: string
+                                offer:
+                                  type: string
+                                has_deviation:
+                                  type: boolean
+                              required:
+                                - request
+                                - offer
+                                - has_deviation
+                          required:
+                            - quantity
+                            - price
+                            - subtotal
+                            - delivery_date
+                            - brand
+                            - warranty
+                            - delivery_address
+                            - address_details
+                      required:
+                        - id
+                        - name
+                        - request_quantity
+                        - request_price
+                        - request_delivery_date
+                        - location
+                        - rfq_number
+                        - item_code
+                        - vendor_code
+                        - offer_vendor_delivery_date
+                        - offer_vendor_price
+                        - vendor_description
+                        - reject_reason
+                        - vendor_reject_reason
+                        - status_dic
+                        - status_milestone
+                        - offer_vendor_specification
+                        - offer_vendor_brand
+                        - offer_vendor_warranty
+                        - offer_vendor_sloc
+                        - offer_vendor_address_details
+                        - uom
+                        - plant_code
+                        - server_groups
+                        - vendor_batch
+                        - status_vendor
+                        - createdAt
+                        - request_brand
+                        - request_warranty
+                        - request_unit_item
+                        - request_sloc
+                        - plant_name
+                        - vendor1_status
+                        - specification_images
+                        - dic_reject_reason_images
+                        - offer_vendor_sloc_name
+                        - deviations
+                  resend_email:
+                    type: boolean
+                required:
+                  - header
+                  - items
+                  - resend_email
+            required:
+              - message
+              - data
+          example:
+            message: Data all Not Submitted RFQ Items
+            data:
+              header:
+                rfq_number: RFQ0000624
+                pr_number: '1200027427'
+                purchasing_group: IT Inf & Proj Dev
+                pr_creator_name: IT Dept
+                pr_creator_email: admin.itmis@beraucoal.co.id
+                pr_release_date: 23 Dec 2025
+                sla_days: 34
+                vendor_code: '300022'
+                vendor_name: KOPERASI KARYAWAN BINA BERSAMA, KOP
+                milestone: BID Submitted
+                sub_milestone: Waiting Vendor
+                quotation_number: null
+                quotation_date: null
+                document: null
+              items:
+                - id: 1882
+                  name: CABLE ASSY,SP,ELECT;STP CAT 6
+                  request_quantity: 2
+                  request_price: '6455000.00'
+                  request_delivery_date: '2025-12-25T17:00:00.000Z'
+                  location: Berau Head Office
+                  rfq_number: RFQ0000624
+                  item_code: '10'
+                  vendor_code: '300022'
+                  offer_vendor_delivery_date: null
+                  offer_vendor_price: null
+                  vendor_description: null
+                  reject_reason: null
+                  vendor_reject_reason: null
+                  status_dic: null
+                  status_milestone: 2
+                  offer_vendor_specification: null
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_sloc: null
+                  offer_vendor_address_details: null
+                  uom: BOX
+                  plant_code: B200
+                  server_groups: BCG
+                  vendor_batch: 1
+                  status_vendor: 0
+                  createdAt: '2026-01-20T01:12:08.000Z'
+                  request_brand: 'NO'
+                  request_warranty: 0
+                  request_unit_item: BOX
+                  request_sloc: null
+                  plant_name: Berau Head Office
+                  vendor1_status: null
+                  specification_images: null
+                  dic_reject_reason_images: null
+                  offer_vendor_sloc_name: null
+                  deviations:
+                    quantity:
+                      request: 2 BOX
+                      offer: 2 BOX
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 6455000
+                      offer: 6455000
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    subtotal:
+                      request: 12910000
+                      offer: 12910000
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_date:
+                      request: '2025-12-25T17:00:00.000Z'
+                      request_formatted: 26 Dec 2025
+                      offer: '2025-12-25T17:00:00.000Z'
+                      offer_formatted: 26 Dec 2025
+                      days_diff: 0
+                      formatted: 0 days
+                      has_deviation: false
+                    brand:
+                      request: 'NO'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: 'NO'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      vendor_sloc_codes: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+                - id: 1909
+                  name: CABLE ASSY,SP,ELECT;STP CAT 6
+                  request_quantity: 2
+                  request_price: '6455000.00'
+                  request_delivery_date: '2025-12-25T17:00:00.000Z'
+                  location: Berau Head Office
+                  rfq_number: RFQ0000624
+                  item_code: '10'
+                  vendor_code: '300022'
+                  offer_vendor_delivery_date: null
+                  offer_vendor_price: null
+                  vendor_description: ''
+                  reject_reason: null
+                  vendor_reject_reason: null
+                  status_dic: null
+                  status_milestone: 2
+                  offer_vendor_specification: null
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_sloc: null
+                  offer_vendor_address_details: null
+                  uom: BOX
+                  plant_code: B200
+                  server_groups: BCG
+                  vendor_batch: 1
+                  status_vendor: 0
+                  createdAt: '2026-01-21T04:00:59.000Z'
+                  request_brand: 'NO'
+                  request_warranty: 0
+                  request_unit_item: BOX
+                  request_sloc: null
+                  plant_name: Berau Head Office
+                  vendor1_status: null
+                  specification_images: null
+                  dic_reject_reason_images: null
+                  offer_vendor_sloc_name: null
+                  deviations:
+                    quantity:
+                      request: 2 BOX
+                      offer: 2 BOX
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 6455000
+                      offer: 6455000
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    subtotal:
+                      request: 12910000
+                      offer: 12910000
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_date:
+                      request: '2025-12-25T17:00:00.000Z'
+                      request_formatted: 26 Dec 2025
+                      offer: '2025-12-25T17:00:00.000Z'
+                      offer_formatted: 26 Dec 2025
+                      days_diff: 0
+                      formatted: 0 days
+                      has_deviation: false
+                    brand:
+                      request: 'NO'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: 'NO'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      vendor_sloc_codes: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+                - id: 1881
+                  name: PARTS LIST;SUPPORT INSTALAS (KABEL POWER
+                  request_quantity: 2
+                  request_price: '6660000.00'
+                  request_delivery_date: '2025-12-25T17:00:00.000Z'
+                  location: Berau Head Office
+                  rfq_number: RFQ0000624
+                  item_code: '9'
+                  vendor_code: '300022'
+                  offer_vendor_delivery_date: null
+                  offer_vendor_price: null
+                  vendor_description: null
+                  reject_reason: null
+                  vendor_reject_reason: null
+                  status_dic: null
+                  status_milestone: 2
+                  offer_vendor_specification: null
+                  offer_vendor_brand: null
+                  offer_vendor_warranty: null
+                  offer_vendor_sloc: null
+                  offer_vendor_address_details: null
+                  uom: UNT
+                  plant_code: B200
+                  server_groups: BCG
+                  vendor_batch: 1
+                  status_vendor: 0
+                  createdAt: '2026-01-20T01:12:08.000Z'
+                  request_brand: 'NO'
+                  request_warranty: 0
+                  request_unit_item: UNT
+                  request_sloc: null
+                  plant_name: Berau Head Office
+                  vendor1_status: null
+                  specification_images: null
+                  dic_reject_reason_images: null
+                  offer_vendor_sloc_name: null
+                  deviations:
+                    quantity:
+                      request: 2 UNT
+                      offer: 2 UNT
+                      value: 0
+                      has_deviation: false
+                    price:
+                      request: 6660000
+                      offer: 6660000
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    subtotal:
+                      request: 13320000
+                      offer: 13320000
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_date:
+                      request: '2025-12-25T17:00:00.000Z'
+                      request_formatted: 26 Dec 2025
+                      offer: '2025-12-25T17:00:00.000Z'
+                      offer_formatted: 26 Dec 2025
+                      days_diff: 0
+                      formatted: 0 days
+                      has_deviation: false
+                    brand:
+                      request: 'NO'
+                      offer: '-'
+                      status: berbeda dengan PR
+                      has_deviation: 'NO'
+                    warranty:
+                      request: 0
+                      offer: 0
+                      request_formatted: '-'
+                      offer_formatted: '-'
+                      value: 0
+                      formatted: '-'
+                      has_deviation: false
+                    delivery_address:
+                      request: '-'
+                      offer: '-'
+                      vendor_sloc_codes: '-'
+                      status: Belum diisi vendor
+                      has_deviation: true
+                    address_details:
+                      request: '-'
+                      offer: '-'
+                      has_deviation: false
+              resend_email: false
+      headers: {}
+  security:
+    - bearer: []

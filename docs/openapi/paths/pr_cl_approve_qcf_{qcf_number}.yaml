@@ -1,0 +1,49 @@
+put:
+  summary: CL approve QCF
+  deprecated: false
+  description: |
+    Category Lead approves Quotation Comparison Form.
+
+    **Important**: After approval:
+    - Items marked as approved (qcf_approved = true)
+    - Vendor status updates sent
+    - SAP Auto PO synchronization triggered
+  operationId: clApproveQCF
+  tags:
+    - CL Operations
+  parameters:
+    - name: qcf_number
+      in: path
+      description: QCF number identifier
+      required: true
+      example: QCF0000004
+      schema:
+        type: string
+        maxLength: 20
+        example: QCF20240001
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties: {}
+        example:
+          cl_comment: Approved with 15% cost saving
+  responses:
+    '200':
+      description: QCF approved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  updated:
+                    type: integer
+      headers: {}
+  security:
+    - bearer: []

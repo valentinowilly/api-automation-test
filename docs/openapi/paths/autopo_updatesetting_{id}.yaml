@@ -1,0 +1,36 @@
+post:
+  summary: Update setting parameter
+  deprecated: false
+  description: |
+    Update an existing setting parameter by ID.
+  operationId: updateSettingParameter
+  tags:
+    - Auto PO Configuration
+  parameters:
+    - name: id
+      in: path
+      description: Configuration ID
+      required: true
+      example: 0
+      schema:
+        type: integer
+        example: 1
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          description: Updated setting parameter values
+          properties: {}
+    required: true
+  responses:
+    '200':
+      description: Setting parameter updated successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: {}
+      headers: {}
+  security:
+    - bearer: []

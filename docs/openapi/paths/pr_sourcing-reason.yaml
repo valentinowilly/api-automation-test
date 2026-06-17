@@ -1,0 +1,50 @@
+get:
+  summary: Get List Sourcing Reason
+  deprecated: false
+  description: ''
+  tags:
+    - Sourcing Reason
+  parameters: []
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    reason:
+                      type: string
+                    actor:
+                      type: string
+                  required:
+                    - id
+                    - reason
+                    - actor
+            required:
+              - message
+              - data
+          example:
+            message: Berhasil mengambil data config reason
+            data:
+              - id: 1
+                reason: Harga diatas OE
+                actor: cs
+              - id: 2
+                reason: Vendor tidak bisa supply
+                actor: cs
+              - id: 3
+                reason: Vendor tidak submit
+                actor: cs
+      headers: {}
+  security:
+    - bearer: []

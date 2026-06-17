@@ -1,0 +1,15 @@
+type: object
+properties:
+  totalItems:
+    type: integer
+  totalPages:
+    type: integer
+  currentPage:
+    type: integer
+  itemsPerPage:
+    type: integer
+required:
+  - totalItems
+  - totalPages
+  - currentPage
+  - itemsPerPage

@@ -1,0 +1,56 @@
+put:
+  summary: Switch Role
+  deprecated: false
+  description: Switch the authenticated user's active role and receive a new access token with updated permissions
+  tags:
+    - Authentication/New method
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - role_id
+          properties:
+            role_id:
+              type: integer
+              description: ID of the role to switch to
+              example: 1
+        example:
+          role_id: 1
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                required:
+                  - access_token
+            required:
+              - message
+              - data
+          example:
+            message: Switch Role Berhasil
+            data:
+              access_token: >-
+                eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoicHJvY3VyZW1lbnRAc2luYXJtYXNtaW5pbmcuY29tIiwibGV2ZWwiOjEsInJvbGUiOiJhZG1pbiIsInBlcm1pc3Npb25zIjpbInVzZXI6Y3JlYXRlIiwidXNlcjpyZWFkIiwidXNlcjp1cGRhdGUiLCJ1c2VyOmRlbGV0ZSIsInJvbGU6Y3JlYXRlIiwicm9sZTpyZWFkIiwicm9sZTp1cGRhdGUiLCJyb2xlOmRlbGV0ZSIsInBlcm1pc3Npb246Y3JlYXRlIiwicGVybWlzc2lvbjpyZWFkIiwicGVybWlzc2lvbjp1cGRhdGUiLCJwZXJtaXNzaW9uOmRlbGV0ZSJdLCJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6IiJ9LCJpYXQiOjE3NzA4MDExNTgsImV4cCI6MTc3MDk3Mzk1OH0.JQpgRKqlx4_QHRcBHn6e14peA77cVUXzzFGbEl2z2eU
+      headers: {}
+    '400':
+      $ref: '../components/responses/ErrorResponses.yaml#/BadRequest'
+    '401':
+      $ref: '../components/responses/ErrorResponses.yaml#/Unauthorized'
+    '500':
+      $ref: '../components/responses/ErrorResponses.yaml#/InternalServerError'
+  security:
+    - bearer: []

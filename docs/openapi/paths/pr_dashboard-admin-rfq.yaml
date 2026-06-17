@@ -1,0 +1,492 @@
+get:
+  summary: Dashboard Admin RFQ
+  deprecated: false
+  description: ''
+  tags:
+    - Dashboard/Admin
+  parameters:
+    - name: page
+      in: query
+      description: ''
+      required: false
+      example: '1'
+      schema:
+        type: string
+    - name: limit
+      in: query
+      description: ''
+      required: false
+      example: '10'
+      schema:
+        type: string
+    - name: status_filter
+      in: query
+      description: ''
+      required: false
+      example: Waiting Vendor
+      schema:
+        type: string
+        enum:
+          - Waiting Vendor
+          - Waiting User
+          - Waiting CS
+          - Manual Sourcing
+          - Waiting Procurement
+          - PO Published
+    - name: action_filter
+      in: query
+      description: ''
+      required: false
+      example: Manual Sourcing
+      schema:
+        type: string
+        enum:
+          - Manual Sourcing
+    - name: sort
+      in: query
+      description: ''
+      required: false
+      example: rfq_number
+      schema:
+        type: string
+        enum:
+          - rfq_number
+          - pr_number
+          - sla
+          - status
+          - action
+          - pr_release_date
+    - name: order
+      in: query
+      description: ''
+      required: false
+      example: asc
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+    - name: search
+      in: query
+      description: ''
+      required: false
+      schema:
+        type: string
+    - name: date_to
+      in: query
+      description: ''
+      required: false
+      example: '2026-02-10'
+      schema:
+        type: string
+    - name: date_from
+      in: query
+      description: ''
+      required: false
+      example: '2026-02-10'
+      schema:
+        type: string
+  responses:
+    '200':
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  summary:
+                    type: object
+                    properties:
+                      total_rfq:
+                        type: integer
+                      total_items:
+                        type: integer
+                      need_action:
+                        type: integer
+                      waiting:
+                        type: integer
+                      po_published:
+                        type: integer
+                      manual_sourcing:
+                        type: integer
+                    required:
+                      - total_rfq
+                      - total_items
+                      - need_action
+                      - waiting
+                      - po_published
+                      - manual_sourcing
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rfq_number:
+                          type: string
+                        pr_number:
+                          type: string
+                        pr_release_date:
+                          type: string
+                        server_groups:
+                          type: string
+                        SLA:
+                          type: integer
+                        vendor:
+                          type: string
+                        vendor_code:
+                          type: string
+                        vendor_batch:
+                          type: integer
+                        cs_name:
+                          type: string
+                        cs_email:
+                          type: string
+                        status_vendor:
+                          type: string
+                        status_dic:
+                          type: string
+                        milestone_id:
+                          type: integer
+                        status_milestone:
+                          type: string
+                        status_submilestone:
+                          type: string
+                        status:
+                          type: string
+                        status_group:
+                          type: string
+                        action:
+                          type: string
+                          nullable: true
+                        items:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              quantity:
+                                type: integer
+                              item_code:
+                                type: string
+                              item_text:
+                                type: string
+                            required:
+                              - quantity
+                              - item_code
+                              - item_text
+                      required:
+                        - rfq_number
+                        - pr_number
+                        - pr_release_date
+                        - server_groups
+                        - SLA
+                        - vendor
+                        - vendor_code
+                        - vendor_batch
+                        - cs_name
+                        - cs_email
+                        - status_vendor
+                        - status_dic
+                        - milestone_id
+                        - status_milestone
+                        - status_submilestone
+                        - status
+                        - status_group
+                        - action
+                        - items
+                  pagination:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      itemsPerPage:
+                        type: integer
+                    required:
+                      - totalItems
+                      - totalPages
+                      - currentPage
+                      - itemsPerPage
+                required:
+                  - summary
+                  - data
+                  - pagination
+            required:
+              - message
+              - data
+          example:
+            message: Get All Data RFQ
+            data:
+              summary:
+                total_rfq: 280
+                total_items: 671
+                need_action: 450
+                waiting: 392
+                po_published: 0
+                manual_sourcing: 0
+              data:
+                - rfq_number: RFQ0000670
+                  pr_number: '070226001'
+                  pr_release_date: '2026-02-07T11:25:03.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: KALIMANTAN PERMAI WIJAYA, PT (Level 1)
+                  vendor_code: '100415'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 20
+                      item_code: '2'
+                      item_text: BRAKE FLUID,AUTOMOTIVE;DOT 4
+                    - quantity: 3
+                      item_code: '1'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+                - rfq_number: RFQ0000670
+                  pr_number: '070226001'
+                  pr_release_date: '2026-02-07T11:25:03.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: KOPERASI KARYAWAN BINA BERSAMA, KOP (Level 2)
+                  vendor_code: '300022'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 20
+                      item_code: '2'
+                      item_text: BRAKE FLUID,AUTOMOTIVE;DOT 4
+                    - quantity: 3
+                      item_code: '1'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+                - rfq_number: RFQ0000671
+                  pr_number: '070226001'
+                  pr_release_date: '2026-02-07T11:25:03.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: MULTI TEKHNIK JAYA, CV (Level 1)
+                  vendor_code: '101839'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 15
+                      item_code: '4'
+                      item_text: CLAMP,HOSE;63024;2IN DIA;BREEZE USA
+                    - quantity: 10
+                      item_code: '3'
+                      item_text: CLAMP,HOSE;63040;3IN DIA;BREEZE USA
+                - rfq_number: RFQ0000671
+                  pr_number: '070226001'
+                  pr_release_date: '2026-02-07T11:25:03.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: KOPERASI KARYAWAN BINA BERSAMA, KOP (Level 2)
+                  vendor_code: '300022'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 15
+                      item_code: '4'
+                      item_text: CLAMP,HOSE;63024;2IN DIA;BREEZE USA
+                    - quantity: 10
+                      item_code: '3'
+                      item_text: CLAMP,HOSE;63040;3IN DIA;BREEZE USA
+                - rfq_number: RFQ0000674
+                  pr_number: '070226003'
+                  pr_release_date: '2026-02-07T14:44:35.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: KALIMANTAN PERMAI WIJAYA, PT (Level 1)
+                  vendor_code: '100415'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 20
+                      item_code: '2'
+                      item_text: BRAKE FLUID,AUTOMOTIVE;DOT 4
+                    - quantity: 3
+                      item_code: '1'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+                - rfq_number: RFQ0000675
+                  pr_number: '070226003'
+                  pr_release_date: '2026-02-07T14:44:35.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: MULTI TEKHNIK JAYA, CV (Level 1)
+                  vendor_code: '101839'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 15
+                      item_code: '4'
+                      item_text: CLAMP,HOSE;63024;2IN DIA;BREEZE USA
+                    - quantity: 10
+                      item_code: '3'
+                      item_text: CLAMP,HOSE;63040;3IN DIA;BREEZE USA
+                - rfq_number: RFQ0000677
+                  pr_number: '080226001'
+                  pr_release_date: '2026-02-08T10:16:54.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: KOPERASI KARYAWAN BINA BERSAMA, KOP (Level 2)
+                  vendor_code: '300022'
+                  vendor_batch: 2
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Accepted
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 15
+                      item_code: '4'
+                      item_text: CLAMP,HOSE;63024;2IN DIA;BREEZE USA
+                    - quantity: 10
+                      item_code: '3'
+                      item_text: CLAMP,HOSE;63040;3IN DIA;BREEZE USA
+                - rfq_number: RFQ0000678
+                  pr_number: '080226002'
+                  pr_release_date: '2026-02-08T13:38:37.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: KALIMANTAN PERMAI WIJAYA, PT (Level 1)
+                  vendor_code: '100415'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 20
+                      item_code: '2'
+                      item_text: BRAKE FLUID,AUTOMOTIVE;DOT 4
+                    - quantity: 3
+                      item_code: '1'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+                - rfq_number: RFQ0000678
+                  pr_number: '080226002'
+                  pr_release_date: '2026-02-08T13:38:37.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: KOPERASI KARYAWAN BINA BERSAMA, KOP (Level 2)
+                  vendor_code: '300022'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 20
+                      item_code: '2'
+                      item_text: BRAKE FLUID,AUTOMOTIVE;DOT 4
+                    - quantity: 3
+                      item_code: '1'
+                      item_text: RELAY,THERMAL;24V;5 PIN
+                - rfq_number: RFQ0000679
+                  pr_number: '080226002'
+                  pr_release_date: '2026-02-08T13:38:37.000Z'
+                  server_groups: BCG
+                  SLA: 15
+                  vendor: KOPERASI KARYAWAN BINA BERSAMA, KOP (Level 2)
+                  vendor_code: '300022'
+                  vendor_batch: 1
+                  cs_name: Cellina Trishana
+                  cs_email: cellina.trishana@sinarmasmining.com
+                  status_vendor: Pending
+                  status_dic: Pending
+                  milestone_id: 2
+                  status_milestone: BID Submitted
+                  status_submilestone: Waiting Vendor
+                  status: Waiting Vendor
+                  status_group: waiting
+                  action: null
+                  items:
+                    - quantity: 15
+                      item_code: '4'
+                      item_text: CLAMP,HOSE;63024;2IN DIA;BREEZE USA
+                    - quantity: 10
+                      item_code: '3'
+                      item_text: CLAMP,HOSE;63040;3IN DIA;BREEZE USA
+              pagination:
+                totalItems: 85
+                totalPages: 9
+                currentPage: 1
+                itemsPerPage: 10
+      headers: {}
+  security:
+    - bearer: []
